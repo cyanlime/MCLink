@@ -1,4 +1,7 @@
 from django.conf.urls import url
+from django.conf import settings
+from django.conf.urls.static import static
+
 from . import views
 
 urlpatterns = [
@@ -8,3 +11,4 @@ urlpatterns = [
     url(r'^v1/bind/$', views.establish_relationship, name='establish_relationship'),
     url(r'^v1/bound_accounts/$', views.bound_accounts, name='bound_accounts')
 ]
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
