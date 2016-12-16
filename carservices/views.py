@@ -105,9 +105,9 @@ def establish_relationship(request):
     # # # headimgurl = userinfo_content.get('headimgurl')
 
     
-    state = '2'
-    openID = '1'
-    nickname = 'aasxa'
+    state = '1'
+    openID = '1q'
+    nickname = 'aaxa'
     headimgurl = 'www.baidu.com'
     try:       
         carmeid = Account.objects.get(id=state)
@@ -115,22 +115,14 @@ def establish_relationship(request):
         try:
             wxuser = WXUser.objects.get(openid=openID)
 
-            if wxuser.account.id!=state:
-                wxuser.account=carmeid
-                wxuser.save()
-
-            else:
-                # if wxuser.name!=nickname:
-                #     wxuser.name=nickname
-                #     wxuser.save()
-                # if wxuser.head_portrait!=headimgurl:
-                #     wxuser.head_portrait=headimgurl
-                #     wxuser.save()
-                #pdb.set_trace()
-                if (wxuser.name!=nickname) or (wxuser.head_portrait!=headimgurl):
+            if (wxuser.account.id!=state) or (wxuser.name!=nickname) or (wxuser.head_portrait!=headimgurl):
+                if wxuser.account.id!=state:
+                    wxuser.account=carmeid
+                if wxuser.name!=nickname:
                     wxuser.name=nickname
+                if wxuser.head_portrait!=headimgurl:
                     wxuser.head_portrait=headimgurl
-                    wxuser.save()
+                wxuser.save()
 
         except ObjectDoesNotExist:
             wxuser = WXUser.objects.create(openid=openID, name=nickname, head_portrait=headimgurl, account=carmeid)
