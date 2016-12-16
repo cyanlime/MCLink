@@ -11,4 +11,4 @@ urlpatterns = [
     url(r'^v1/bind/$', views.establish_relationship, name='establish_relationship'),
     url(r'^v1/bound_accounts/$', views.bound_accounts, name='bound_accounts')
 ]
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

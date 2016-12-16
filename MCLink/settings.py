@@ -26,6 +26,7 @@ SECRET_KEY = '&a5w-=!+5nuc87vlhns+w*^!h_@&1*e*qx8w*viq$f5+d4x5re'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = ['car.yijiayinong.com']
 
 
 # Application definition
@@ -123,6 +124,6 @@ USE_TZ = False
 STATIC_URL = '/static/'
 #STATIC_URL = '/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static"),
+# ]
