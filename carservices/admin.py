@@ -10,7 +10,7 @@ class AccountAdmin(admin.ModelAdmin):
     search_fields = ['id']
 
 class WXUserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'openid', 'name', 'head_portrait', 'account')
+    list_display = ('id', 'openid', 'name', 'head_portrait', 'account', 'bind')
     search_fields = ['name']
 
 admin.site.register(Account, AccountAdmin)

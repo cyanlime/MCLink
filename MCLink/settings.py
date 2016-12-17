@@ -25,8 +25,8 @@ SECRET_KEY = '&a5w-=!+5nuc87vlhns+w*^!h_@&1*e*qx8w*viq$f5+d4x5re'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-#ALLOWED_HOSTS = ['car.yijiayinong.com']
+#ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['car.yijiayinong.com']
 
 
 # Application definition
@@ -46,6 +46,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfResponseMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',

@@ -17,5 +17,6 @@ class WXUser(models.Model):
     name = models.CharField(max_length=200)
     head_portrait = models.URLField()
     account = models.ForeignKey('Account', blank=True, null=True, on_delete=models.SET_NULL)
+    bind = models.BooleanField()
     def __unicode__(self):
         return self.openid
