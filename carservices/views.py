@@ -16,6 +16,7 @@ import json
 import time
 import uuid
 import exceptions
+import os
 
 # Create your views here.
 
@@ -78,35 +79,41 @@ def page(request):
 @csrf_exempt
 def establish_relationship(request):
     import pdb
-    #pdb.set_trace()
+    pdb.set_trace()
     #return HttpResponseRedirect('page/')
     
 
-    # # # code = request.GET.get('code')
-    # # # state = request.GET.get('state')
+    code = request.GET.get('code')
+    state = request.GET.get('state')
+    print code
+    print state
 
-    # # # if code is None or state is None:
-    # # #     return HttpResponse('Bad Request')
+    if code is None or state is None:
+        return HttpResponse('Bad Request')
     
-    # # # fetch_access_token_url = '%s%s%s' % (config.FETCH_ACCESS_TOKEN_URL) 
-    # # # access_token_response = requests.get(fetch_access_token_url)
+    appid = os.getenv('appid')
+    secret = os.getenv('secret')
+
+    fetch_access_token_url = config.FETCH_ACCESS_TOKEN_URL % (appid, secret, code)
+    #fetch_access_token_url = 'http://www.baidu.com'
+    access_token_response = requests.get(fetch_access_token_url)
     
-    # # # access_token_content = access_token_response.json()
-    # # # openID = access_token_content.get('openid')
-    # # # access_token = access_token_content.get('access_token')
+    access_token_content = access_token_response.json()
+    openID = access_token_content.get('openid')
+    access_token = access_token_content.get('access_token')
 
-    # # # fetch_user_info_url = '%s%s' % (config.FETCH_USER_INFO_URL)
-    # # # userinfo_response = requests.get(fetch_user_info_url)
+    fetch_user_info_url = config.FETCH_USER_INFO_URL % (access_token, openID)
+    userinfo_response = requests.get(fetch_user_info_url)
 
-    # # # userinfo_content = userinfo_response.json()
-    # # # nickname = userinfo_content.get('nickname')
-    # # # headimgurl = userinfo_content.get('headimgurl')
+    userinfo_content = userinfo_response.json()
+    nickname = userinfo_content.get('nickname')
+    headimgurl = userinfo_content.get('headimgurl')
 
-    
-    state = '3'
-    openID = '1'
-    nickname = 'awea'
-    headimgurl = 'www.baidu.com'
+
+    # state = '3'
+    # openID = '1'
+    # nickname = 'awea'
+    # headimgurl = 'www.baidu.com'
     try:       
         carmeid = Account.objects.get(id=state)
 
@@ -141,7 +148,7 @@ def establish_relationship(request):
                         wxuser.save()    
                         account_wxuser_bind = {'code': 0, 'result': {'msg': "WXUser's information modified successfully."}}
                         return JsonResponse(account_wxuser_bind)
-            account_wxuser_bind = {'code': 1, 'result': {'msg': "Please unbinding the binding-CarMEID first."}}
+            account_wxuser_bind = {'code': 1, 'result': {'msg': "Please unbind the binding-CarMEID first."}}
             return JsonResponse(account_wxuser_bind)
 
         bundled_wxusers = WXUser.objects.filter(openid=openID).filter(bind=False)
@@ -220,7 +227,7 @@ def establish_relationship(request):
             return JsonResponse(account_wxuser_bind)
 
     except ObjectDoesNotExist:
-        account_wxuser_bind = {'code': 1, 'result': {'errmsg': "Invalid CarMEID"}}
+        account_wxuser_bind = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
         return JsonResponse(account_wxuser_bind)
 
     #response = requests.get('http://192.168.102.9:8000/api/v1/page/')
