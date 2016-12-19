@@ -32,7 +32,7 @@ def sign_in(request):
             carmeid_password = carmeid.password
 
             if PassWord!=carmeid_password:
-                carmeids = {'errmsg': "Incorrect password."}
+                carmeids = {'code': 1, 'result': {'errmsg': "Incorrect password."}}
                 return JsonResponse(carmeids)
 
             else:
@@ -41,7 +41,7 @@ def sign_in(request):
                 carmeid_create_time = carmeid.create_time
                 timestamp_carmeid_createtime = time.mktime(carmeid_create_time.timetuple())
 
-                carmeids = {'create_time': timestamp_carmeid_createtime, 'id': carmeid_id, 'token': carmeid_token}
+                carmeids = {'code': 0, 'result': {'create_time': timestamp_carmeid_createtime, 'id': carmeid_id, 'token': carmeid_token}}
                 return JsonResponse(carmeids)
 
         except ObjectDoesNotExist:
@@ -52,10 +52,10 @@ def sign_in(request):
             carmeid_create_time = carmeid.create_time
             timestamp_carmeid_createtime = time.mktime(carmeid_create_time.timetuple())
 
-            carmeids = {'create_time': timestamp_carmeid_createtime, 'id': carmeid_id, 'token': carmeid_token}
+            carmeids = {'code': 0, 'result': {'create_time': timestamp_carmeid_createtime, 'id': carmeid_id, 'token': carmeid_token}}
             return JsonResponse(carmeids)
     else:
-        carmeids = {'errmsg': "Incoming parameter id or password is null."}
+        carmeids = {'code': 1, 'result': {'errmsg': "Incoming parameter id or password is null."}}
         return JsonResponse(carmeids)
 
    
@@ -81,7 +81,6 @@ def establish_relationship(request):
     #pdb.set_trace()
     #return HttpResponseRedirect('page/')
     
-    
 
     # # # code = request.GET.get('code')
     # # # state = request.GET.get('state')
@@ -104,9 +103,9 @@ def establish_relationship(request):
     # # # headimgurl = userinfo_content.get('headimgurl')
 
     
-    state = '2'
-    openID = '2'
-    nickname = 'aasxa'
+    state = '3'
+    openID = '1'
+    nickname = 'awea'
     headimgurl = 'www.baidu.com'
     try:       
         carmeid = Account.objects.get(id=state)
@@ -125,59 +124,82 @@ def establish_relationship(request):
 
         # except ObjectDoesNotExist:
         #     wxuser = WXUser.objects.create(openid=openID, name=nickname, head_portrait=headimgurl, account=carmeid)
-
-      
-        #wxusers = WXUser.objects.filter(openid=openID).filter(bind=True)
-        wxusers = WXUser.objects.filter(openid=openID)
-
+        
+        #pdb.set_trace()
+        wxusers = WXUser.objects.filter(openid=openID).filter(bind=True)
         if wxusers is not None and len(wxusers)==1:
             for wxuser in wxusers:
-                if wxuser.bind==False and wxuser.account.id==state:
-                    wxuser.bind==True
-                    wxuser.name=nickname
-                    wxuser.head_portrait=headimgurl
-                    wxuser.save()
-                    account_wxuser_bind = {'msg': "WXUser and CarMEID bind successfully."}
+                if wxuser.account.id==state:
+                    if wxuser.name==nickname and wxuser.head_portrait==headimgurl:
+                        account_wxuser_bind = {'code': 1, 'result': {'msg': "WXUser had already bind to CarMEID."}}
+                        return JsonResponse(account_wxuser_bind)
+                    else:
+                        if wxuser.name!=nickname:
+                            wxuser.name=nickname
+                        if wxuser.head_portrait!=headimgurl:
+                            wxuser.head_portrait=headimgurl
+                        wxuser.save()    
+                        account_wxuser_bind = {'code': 0, 'result': {'msg': "WXUser's information modified successfully."}}
+                        return JsonResponse(account_wxuser_bind)
+            account_wxuser_bind = {'code': 1, 'result': {'msg': "Please unbinding the binding-CarMEID first."}}
+            return JsonResponse(account_wxuser_bind)
+
+        bundled_wxusers = WXUser.objects.filter(openid=openID).filter(bind=False)
+        if len(wxusers)==0 and len(bundled_wxusers)>0:
+            for bundled_wxuser in bundled_wxusers:
+                if bundled_wxuser.account.id==state:
+                    bundled_wxuser.bind=True
+                    bundled_wxuser.name=nickname
+                    bundled_wxuser.head_portrait=headimgurl
+                    bundled_wxuser.save()
+                    account_wxuser_bind = {'code': 0, 'result': {'msg': "WXUser binds to CarMEID successfully."}}
                     return JsonResponse(account_wxuser_bind)
 
-                if wxuser.bind==False and wxuser.account.id!=state:
-                    new_wxuser = WXUser.objects.create(openid=openID, name=nickname, head_portrait=headimgurl, account=carmeid, bind=True)
-                    account_wxuser_bind = {'msg': "WXUser and CarMEID bind successfully."}
-                    return JsonResponse(account_wxuser_bind)
+                    # if wxuser.bind==False and wxuser.account.id!=state:
+                    #     new_wxuser = WXUser.objects.create(openid=openID, name=nickname, head_portrait=headimgurl, account=carmeid, bind=True)
+                    #     account_wxuser_bind = {'code': 0, 'result': {'msg': "WXUser binds to CarMEID successfully."}}
+                    #     return JsonResponse(account_wxuser_bind)
 
-                if wxuser.bind==True and wxuser.account.id!=state:
-                    account_wxuser_bind = {'msg': "Please unbinding the binding-CarMEID first."}
-                    return JsonResponse(account_wxuser_bind)
+                    # if wxuser.bind==True and wxuser.account.id!=state:
+                    #     account_wxuser_bind = {'code': 1, 'result': {'msg': "Please unbinding the binding-CarMEID first."}}
+                    #     return JsonResponse(account_wxuser_bind)
 
-                if wxuser.bind==True and wxuser.account.id==state and (wxuser.name!=nickname or wxuser.head_portrait!=headimgurl):
-                    if wxuser.name!=nickname:
-                        wxuser.name=nickname
-                    if wxuser.head_portrait!=headimgurl:
-                        wxuser.head_portrait=headimgurl
-                    wxuser.save()
+                    # if wxuser.bind==True and wxuser.account.id==state and (wxuser.name!=nickname or wxuser.head_portrait!=headimgurl):
+                    #     if wxuser.name!=nickname:
+                    #         wxuser.name=nickname
+                    #     if wxuser.head_portrait!=headimgurl:
+                    #         wxuser.head_portrait=headimgurl
+                    #     wxuser.save()
 
-                    # wxuser_id = wxuser.id
-                    # wxuser_openid = wxuser.openid
-                    # wxuser_name = wxuser.name
-                    # wxuser_head_portrait = wxuser.head_portrait
-                    # wxuser_bind = wxuser.bind
+                        # wxuser_id = wxuser.id
+                        # wxuser_openid = wxuser.openid
+                        # wxuser_name = wxuser.name
+                        # wxuser_head_portrait = wxuser.head_portrait
+                        # wxuser_bind = wxuser.bind
 
-                    # wxuser_account_id = carmeid.id
-                    # wxuser_account_create_time = carmeid.create_time
-                    # timestamp_wxuser_account_createtime = time.mktime(wxuser_account_create_time.timetuple())
+                        # wxuser_account_id = carmeid.id
+                        # wxuser_account_create_time = carmeid.create_time
+                        # timestamp_wxuser_account_createtime = time.mktime(wxuser_account_create_time.timetuple())
 
-                    # account_wxuser_bind = {'id': wxuser_id, 'openid': wxuser_openid, 'name': wxuser_name, 'head_portrait': wxuser_head_portrait, 
-                    #     'bind': wxuser_bind, 'account': {'CarMEID': wxuser_account_id, 'create_time': timestamp_wxuser_account_createtime}}
-                    # return JsonResponse(account_wxuser_bind)
+                        # account_wxuser_bind = {'id': wxuser_id, 'openid': wxuser_openid, 'name': wxuser_name, 'head_portrait': wxuser_head_portrait, 
+                        #     'bind': wxuser_bind, 'account': {'CarMEID': wxuser_account_id, 'create_time': timestamp_wxuser_account_createtime}}
+                        # return JsonResponse(account_wxuser_bind)
 
-                    account_wxuser_bind = {'msg': "WXUser's information modified successfully."}
-                    return JsonResponse(account_wxuser_bind)
+                        # account_wxuser_bind = {'code': 0, 'result': {'msg': "WXUser's information modified successfully."}}
+                        # return JsonResponse(account_wxuser_bind)
 
-                if wxuser.bind==True and wxuser.account.id==state and wxuser.name==nickname and wxuser.head_portrait==headimgurl:
-                    account_wxuser_bind = {'msg': "WXUser and CarMEID had already bind."}
-                    return JsonResponse(account_wxuser_bind)
+                    # if wxuser.bind==True and wxuser.account.id==state and wxuser.name==nickname and wxuser.head_portrait==headimgurl:
+                    #     account_wxuser_bind = {'code': 1, 'result': {'msg': "WXUser had already bind to CarMEID."}}
+                    #     return JsonResponse(account_wxuser_bind)
 
-        else:
+                # else:
+                #     continue
+
+            new_wxuser = WXUser.objects.create(openid=openID, name=nickname, head_portrait=headimgurl, account=carmeid, bind=True)
+            account_wxuser_bind = {'code': 0, 'result': {'msg': "WXUser binds to CarMEID successfully."}}
+            return JsonResponse(account_wxuser_bind)
+            
+        if len(wxusers)==0 and len(bundled_wxusers)==0:
             new_wxuser = WXUser.objects.create(openid=openID, name=nickname, head_portrait=headimgurl, account=carmeid, bind=True)
 
             # wxuser_id = new_wxuser.id
@@ -194,11 +216,11 @@ def establish_relationship(request):
             #     'bind': wxuser_bind, 'account': {'CarMEID': wxuser_account_id, 'create_time': timestamp_wxuser_account_createtime}}
             # return JsonResponse(account_wxuser_bind)
 
-            account_wxuser_bind = {'msg': "WXUser and CarMEID bind successfully."}
+            account_wxuser_bind = {'code': 0, 'result': {'msg': "WXUser binds to CarMEID successfully."}}
             return JsonResponse(account_wxuser_bind)
 
     except ObjectDoesNotExist:
-        account_wxuser_bind = {'errmsg': "Invalid CarMEID"}
+        account_wxuser_bind = {'code': 1, 'result': {'errmsg': "Invalid CarMEID"}}
         return JsonResponse(account_wxuser_bind)
 
     #response = requests.get('http://192.168.102.9:8000/api/v1/page/')
@@ -234,18 +256,18 @@ def bound_accounts(request):
                     binding_wxuser = {'id': wxuser_id, 'openid': wxuser_openid, 'name': wxuser_name, 'head_portrait': wxuser_head_portrait}
                     binding_wxusers.append(binding_wxuser)
 
-                bundled_accounts = {'CarMEID': account_id, 'create_time': timestamp_account_createtime, 'WXUsers': binding_wxusers}
+                bundled_accounts = {'code': 0, 'result': {'CarMEID': account_id, 'create_time': timestamp_account_createtime, 'WXUsers': binding_wxusers}}
                 return JsonResponse(bundled_accounts)
 
             else:
-                bundled_accounts = {'errmsg': "Expired or Invalid token."}
+                bundled_accounts = {'code': 1, 'result': {'errmsg': "Expired or Invalid token."}}
                 return JsonResponse(bundled_accounts)
 
         except ObjectDoesNotExist:
-            bundled_accounts = {'errmsg': "Empty or Invalid CarMEID."}
+            bundled_accounts = {'code': 1, 'result': {'errmsg': "Empty or Invalid CarMEID."}}
             return JsonResponse(bundled_accounts)
     else:
-        bundled_accounts = {'errmsg': "Incoming parameter id or token is null."}
+        bundled_accounts = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token is null."}}
         return JsonResponse(bundled_accounts)
  
 @csrf_exempt
@@ -267,22 +289,21 @@ def remove_binding(request):
                     if wxuser.bind==True and wxuser.account.id==CarMEID:
                         wxuser.bind=False
                         wxuser.save()
-
-                        unbinding_accounts = {'msg': "Remove binding successfully."}
+                        unbinding_accounts = {'code': 0, 'result': {'msg': "Remove binding successfully."}}
                         return JsonResponse(unbinding_accounts)
                     else:
-                        unbinding_accounts = {'errmsg': "The wxuser does not bind with the CarMEID."}
+                        unbinding_accounts = {'code': 1, 'result': {'errmsg': "WXUser didn't bind to the CarMEID ever."}}
                         return JsonResponse(unbinding_accounts)
                 except ObjectDoesNotExist:
-                    unbinding_accounts = {'errmsg': "The wxuser does not exist."}
+                    unbinding_accounts = {'code': 1, 'result': {'errmsg': "WXUser does not exist."}}
                     return JsonResponse(unbinding_accounts)
             else:
-                unbinding_accounts = {'errmsg': "Expired or Invalid token."}
+                unbinding_accounts = {'code': 1, 'result': {'errmsg': "Expired or Invalid token."}}
                 return JsonResponse(unbinding_accounts)
 
         except ObjectDoesNotExist:
-            unbinding_accounts = {'errmsg': "Empty or Invalid CarMEID."}
+            unbinding_accounts = {'code': 1, 'result': {'errmsg': "Empty or Invalid CarMEID."}}
             return JsonResponse(unbinding_accounts)
     else:
-        unbinding_accounts = {'errmsg': "Incoming parameter id or token or openid is null."}
+        unbinding_accounts = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token or openid is null."}}
         return JsonResponse(unbinding_accounts)
