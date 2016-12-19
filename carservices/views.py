@@ -89,10 +89,12 @@ def establish_relationship(request):
     print state
 
     if code is None or state is None:
-        return HttpResponse('Bad Request')
+        redirect_status = {'code': 1, 'result': {'msg': "Bad Request."}}
+        return JsonResponse(redirect_status)
+        #return HttpResponse('Bad Request')
     
-    appid = os.getenv('appid')
-    secret = os.getenv('secret')
+    appid = os.getenv('AppID')
+    secret = os.getenv('AppSecret')
 
     fetch_access_token_url = config.FETCH_ACCESS_TOKEN_URL % (appid, secret, code)
     #fetch_access_token_url = 'http://www.baidu.com'
