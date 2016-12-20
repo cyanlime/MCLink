@@ -8,7 +8,7 @@ AUTHORIZE_REDIRECT_URL = \
     '?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=%s#wechat_redirect')
 FETCH_ACCESS_TOKEN_URL = \
     ('https://api.weixin.qq.com/sns/oauth2/access_token'
-    '?appid=%s&secrect=%s&code=%s&grant_type=authorization_code')
+    '?appid=%s&secret=%s&code=%s&grant_type=authorization_code')
 
 FETCH_USER_INFO_URL = \
     ('https://api.weixin.qq.com/sns/userinfo'
