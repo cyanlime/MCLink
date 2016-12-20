@@ -293,18 +293,22 @@ def remove_binding(request):
             account_token = account.token
 
             if Token==account_token:
-                try:
-                    wxuser = WXUser.objects.get(openid=OpenID)
-                    if wxuser.bind==True and wxuser.account.id==CarMEID:
-                        wxuser.bind=False
-                        wxuser.save()
-                        unbinding_accounts = {'code': 0, 'result': {'msg': "Remove binding successfully."}}
-                        return JsonResponse(unbinding_accounts)
-                    else:
-                        unbinding_accounts = {'code': 1, 'result': {'errmsg': "WXUser didn't bind to the CarMEID ever."}}
-                        return JsonResponse(unbinding_accounts)
-                except ObjectDoesNotExist:
-                    unbinding_accounts = {'code': 1, 'result': {'errmsg': "WXUser does not exist."}}
+                wxusers = WXUser.objects.filter(openid=OpenID).filter(bind=True)
+                if len(wxusers)==0:
+                    unbinding_accounts = {'code': 1, 'result': {'errmsg': "WXUser that binding to the CarMEID does not exist."}}
+                    return JsonResponse(unbinding_accounts)
+                elif wxusers is not None and len(wxusers)==1:
+                    for wxuser in wxusers:
+                        if wxuser.account.id==CarMEID:
+                            wxuser.bind=False
+                            wxuser.save()
+                            unbinding_accounts = {'code': 0, 'result': {'msg': "Remove binding successfully."}}
+                            return JsonResponse(unbinding_accounts)
+                        else:
+                            unbinding_accounts = {'code': 1, 'result': {'errmsg': "WXUser doesn't bind to the CarMEID."}}
+                            return JsonResponse(unbinding_accounts)                       
+                else:
+                    unbinding_accounts = {'code': 1, 'result': {'errmsg': "More than one WXUser binding to the CarMEID."}}
                     return JsonResponse(unbinding_accounts)
             else:
                 unbinding_accounts = {'code': 1, 'result': {'errmsg': "Expired or Invalid token."}}
