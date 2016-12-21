@@ -16,18 +16,10 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
-# from django.views.generic import RedirectView
-# from django.conf import settings
-# from django.conf.urls.static import static
-
 from . import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include('carservices.urls', namespace="carservices")),
     url(r'^MP_verify_mxqdYEZf8FuVDLUT.txt', views.mp_verify, name='mp_verify'),
-    # url(r'^MP_verify_mxqdYEZf8FuVDLUT\.txt$',
-    #         RedirectView.as_view(url='/static/carservices/MP_verify_mxqdYEZf8FuVDLUT.txt')),
 ]
-
-
