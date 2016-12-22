@@ -106,9 +106,9 @@ def binding(request):
         fetch_userinfo_errmsg = userinfo_content.get('errmsg')
         fetch_userinfo = {'code': 1, 'result': {'errcode': fetch_userinfo_errcode, 'errmsg': fetch_userinfo_errmsg}}
         return JsonResponse(fetch_userinfo)
-    nickname = userinfo_content.get('nickname')
+    nickname = userinfo_content.get('nickname').encode('raw_unicode_escape')
     headimgurl = userinfo_content.get('headimgurl')
-
+ 
     try:       
         carmeid = Account.objects.get(id=state)
         wxusers = WXUser.objects.filter(openid=openID).filter(bind=True)
