@@ -70,13 +70,13 @@ def binding(request):
     code = request.GET.get('code')
     state = request.GET.get('state')
     if code is None or state is None:
-        redirect_status = {'code': 1, 'result': {'msg': "Code or State missing."}}
+        redirect_status = {'code': 1, 'result': {'errmsg': "Code or State missing."}}
         return JsonResponse(redirect_status)
     
     appid = os.getenv('AppID')
     secret = os.getenv('AppSecret')
     if appid is None or secret is None:
-        public_number_status = {'code': 1, 'result': {'msg': "AppID or AppSecret missing."}}
+        public_number_status = {'code': 1, 'result': {'errmsg': "AppID or AppSecret missing."}}
         return JsonResponse(public_number_status)
     fetch_access_token_url = config.FETCH_ACCESS_TOKEN_URL % (appid, secret, code)
     
@@ -84,7 +84,7 @@ def binding(request):
         access_token_response = requests.get(fetch_access_token_url)
         access_token_content = access_token_response.json()
     except:
-        access_token_request = {'code': 1, 'result': {'msg': "Access token Request Error."}}
+        access_token_request = {'code': 1, 'result': {'errmsg': "Access token Request Error."}}
         return JsonResponse(access_token_request)
     fetch_access_token_errcode = access_token_content.get('errcode')
     if fetch_access_token_errcode is not None:
@@ -190,7 +190,7 @@ def bound_accounts(request):
                 return JsonResponse(bundled_accounts)
 
         except ObjectDoesNotExist:
-            bundled_accounts = {'code': 1, 'result': {'errmsg': "Empty or Invalid CarMEID."}}
+            bundled_accounts = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
             return JsonResponse(bundled_accounts)
     else:
         bundled_accounts = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token is null."}}
@@ -230,7 +230,7 @@ def remove_binding(request):
                 return JsonResponse(unbinding_accounts)
 
         except ObjectDoesNotExist:
-            unbinding_accounts = {'code': 1, 'result': {'errmsg': "Empty or Invalid CarMEID."}}
+            unbinding_accounts = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
             return JsonResponse(unbinding_accounts)
     else:
         unbinding_accounts = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token or openid is null."}}
@@ -243,12 +243,12 @@ def generate_qrcode(request):
     CarMEID = request.GET.get('id')
     Token = request.GET.get('token')
     if CarMEID is None or Token is None:
-        sign_in_status = {'code': 1, 'result': {'msg': "CarMEID or Token missing."}}
+        sign_in_status = {'code': 1, 'result': {'errmsg': "CarMEID or Token missing."}}
         return JsonResponse(sign_in_status)
 
     appid = os.getenv('AppID')
     if appid is None:
-        appid_status = {'code': 1, 'result': {'msg': "AppID missing."}}
+        appid_status = {'code': 1, 'result': {'errmsg': "AppID missing."}}
         return JsonResponse(appid_status)
 
     if len(CarMEID)!=0 and len(Token)!=0:
