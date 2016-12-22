@@ -61,9 +61,7 @@ def sign_in(request):
    
 @csrf_exempt
 def binding(request):
-    import pdb
-    pdb.set_trace()
-        
+   
     #logger = logging.getLogger('django')
     code = request.GET.get('code')
     state = request.GET.get('state')
@@ -82,7 +80,7 @@ def binding(request):
         access_token_response = requests.get(fetch_access_token_url)
         access_token_content = access_token_response.json()
     except:
-        access_token_request = {'code': 1, 'result': {'msg': "Access Token Request Error."}}
+        access_token_request = {'code': 1, 'result': {'msg': "Access token Request Error."}}
         return JsonResponse(access_token_request)
     fetch_access_token_errcode = access_token_content.get('errcode')
     if fetch_access_token_errcode is not None:
