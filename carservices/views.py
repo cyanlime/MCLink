@@ -18,6 +18,10 @@ import uuid
 import logging
 import exceptions
 import os
+import urllib
+import qrcode
+from cStringIO import StringIO
+
 
 # Create your views here.
 
@@ -231,3 +235,44 @@ def remove_binding(request):
     else:
         unbinding_accounts = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token or openid is null."}}
         return JsonResponse(unbinding_accounts)
+
+
+@csrf_exempt
+def generate_qrcode(request):
+
+    CarMEID = request.GET.get('id')
+    Token = request.GET.get('token')
+    if CarMEID is None or Token is None:
+        sign_in_status = {'code': 1, 'result': {'msg': "CarMEID or Token missing."}}
+        return JsonResponse(sign_in_status)
+
+    appid = os.getenv('AppID')
+    if appid is None:
+        appid_status = {'code': 1, 'result': {'msg': "AppID missing."}}
+        return JsonResponse(appid_status)
+
+    if len(CarMEID)!=0 and len(Token)!=0:
+        try:
+            account = Account.objects.get(id=CarMEID)
+            account_token = account.token
+
+            if Token==account_token:
+                Redirect_URI = 'http://car.yijiayinong.com/api/v1/bind/'
+                redirect_uri = urllib.quote_plus(Redirect_URI)
+                authorize_redirect_url = config.AUTHORIZE_REDIRECT_URL % (appid, redirect_uri, CarMEID)
+
+                image = qrcode.make(authorize_redirect_url)
+                buf = StringIO()
+                image.save(buf)
+                image_stream = buf.getvalue()
+                return HttpResponse(image_stream, content_type="image/png")
+            else:
+                qrcode_response = {'code': 1, 'result': {'errmsg': "Expired or Invalid token."}}
+                return JsonResponse(qrcode_response)
+
+        except ObjectDoesNotExist:
+            qrcode_response = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
+            return JsonResponse(qrcode_response)
+    else:
+        qrcode_response = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token is null."}}
+        return JsonResponse(qrcode_response)

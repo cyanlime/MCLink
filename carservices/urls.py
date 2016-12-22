@@ -6,6 +6,7 @@ from . import views
 
 urlpatterns = [
     url(r'^v1/sign_in/$', views.sign_in, name='sign_in'),
+    url(r'^v1/qrcode/$', views.generate_qrcode, name='qrcode'),
     url(r'^v1/bind/$', views.binding, name='binding'),
     url(r'^v1/bound_accounts/$', views.bound_accounts, name='bound_accounts'),
     url(r'^v1/unbind/$', views.remove_binding, name='remove_binding'),
