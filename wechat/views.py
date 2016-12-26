@@ -25,7 +25,9 @@ from rest_framework.decorators import(
 from . import utils
 from django.shortcuts import render
 
-from carservices import views
+from carservices.models import *
+from django.core.exceptions import ObjectDoesNotExist
+
 
 def ceshi(request):
 
@@ -96,13 +98,16 @@ def parseTxtMsg(request):
         if msgContent == 'CLICK':
 	    key = xml.find('EventKey').text
 	    if key == 'ceshi':
-		binding = views.binding(request)
-		import pdb 
-		pdb.set_trace()
-		if binding(request).code is None:
-		    msg = '1'
-		else:
+		OppenId = FromUserName
+		 
+		wxusers = WXUser.objects.filter(openid = OppenId).filter(bind=True)
+		if wxusers is not None and len(wxusers)==1:
+		    for _ in wxusers:
+			account = _.account 
+		    msg = account
+		else:  
 		    msg = '您当前尚未绑定设备哦，如需绑定，点击<a href="http://car.yijiayinong.com/ceshi/">扫一扫</a>，对准设备上的二维码即可！'
+
 	    if key == 'news':
 		title = '查看违章'
                 description = '查看违章'
