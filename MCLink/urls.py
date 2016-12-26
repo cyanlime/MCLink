@@ -15,11 +15,22 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-
+from django.conf.urls.static import static
 from . import views
+
+from django.conf import settings
+import wechat.views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include('carservices.urls', namespace="carservices")),
     url(r'^MP_verify_mxqdYEZf8FuVDLUT.txt', views.mp_verify, name='mp_verify'),
+
+
+    url(r'^ceshi/$',wechat.views.ceshi,name='ceshi'),
+    url(r'^location/$',wechat.views.location,name='location'),
+    url(r'^wechat/', include('wechat.urls')),
+
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
+

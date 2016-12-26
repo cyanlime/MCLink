@@ -1,0 +1,60 @@
+<CTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=0.3, maximum-scale=2.0, user-scalable=no" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no" name="format-detection" />
+    <title>位置</title>
+</head>
+<body>
+</body>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="/static/js/jquery-1.9.1.js"></script>
+
+<script type="text/javascript">
+
+
+    (function(){
+        var data;
+        $.ajax({
+            
+            url:'http://car.yijiayinong.com/wechat/weixin1Jsapi/?jsApiList=openLocation',
+            dataType:'json',
+            jsonp: "callback",
+            success:function(data){
+            wx.config({ 
+                debug: data.debug,
+                appId: data.appId,
+                timestamp: data.timestamp,
+                nonceStr: data.nonceStr,
+                signature: data.signature,
+                jsApiList:['getLocation','openLocation','checkJsApi','closeWindow']
+
+            });
+            wx.ready(function() {
+                wx.checkJsApi({  
+                jsApiList : ['getLocation','openLocation','closeWindow'],  
+                success : function(res) {  
+                }  
+                });
+		wx.getLocation({
+    		    type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+    		    success: function (res) {
+		    	wx.openLocation({
+			    latitude: res.latitude,
+			    longitude: res.longitude,
+			    name: '汇众大厦', // 位置名  
+			    address: '海淀区上地七街1号汇众大厦' // 地址详情说明  
+			});
+		     }
+                });
+            })
+            }
+       })
+    })()
+ 
+</script>
+</html>
+

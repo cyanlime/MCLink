@@ -1,0 +1,58 @@
+<CTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, minimum-scale=0.3, maximum-scale=2.0, user-scalable=no" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no" name="format-detection" />
+    <title>扫一扫</title>
+</head>
+<body>
+</body>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="/static/js/jquery-1.9.1.js"></script>
+
+<script type="text/javascript">
+
+
+    (function(){
+        var data;
+        $.ajax({
+	    
+            url:'http://car.yijiayinong.com/wechat/weixinJsapi/?jsApiList=scanQRCode',
+            dataType:'json',
+            jsonp: "callback",
+            success:function(data){
+            wx.config({ 
+   	    	debug: data.debug,
+                appId: data.appId,
+                timestamp: data.timestamp,
+        	nonceStr: data.nonceStr,
+        	signature: data.signature,
+        	jsApiList:['scanQRCode','checkJsApi']
+
+       	    });
+            wx.ready(function() {
+		wx.checkJsApi({  
+                jsApiList : ['scanQRCode'],  
+                success : function(res) {  
+                }  
+                });
+		wx.scanQRCode({
+                needResult: 0, 
+                scanType: ["qrCode","barCode"], 
+                success:function (res) {
+                var result = res.resultStr; 
+                }
+            });
+
+            });
+
+	    } 
+	})
+    })()
+ 
+</script>
+</html>
+
