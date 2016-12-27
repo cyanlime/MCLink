@@ -1,0 +1,210 @@
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+  color: #000;
+  font-family: "苹方, Microsoft YaHei, sans-serif";
+}
+.font_normal {
+  font-size: 3vh;
+  font-weight: normal;
+}
+.font_x_small {
+  font-size: 1.5vh;
+  font-weight: normal;
+}
+.font_small {
+  font-size: 2vh;
+  font-weight: normal;
+}
+.font_larger {
+  font-size: 4vh;
+  font-weight: normal;
+}
+.font_larger_bold {
+  font-size: 4vh;
+  font-weight: bold;
+}
+.font_x_larger_bold {
+  font-size: 6vh;
+  font-weight: bold;
+}
+/*日期插件样式*/
+.date-page {
+  width: 80vw;
+  height: 240px;
+  background: #dadfe2;
+  border-radius: 5px;
+  position: absolute;
+  top: 21vh;
+  left: 10vw;
+  z-index: 100;
+}
+.date-page .date-title {
+  height: 50px;
+  line-height: 50px;
+  font-size: 4vh;
+  font-weight: bold;
+  color: #0092ff;
+  text-align: center;
+  border-bottom: 1px solid #a8a8a8;
+}
+.date-page .date-mark {
+  font-size: 18px;
+  left: 5%;
+  width: 90%;
+  height: 40px;
+  position: absolute;
+  top: 100px;
+  background: #eee;
+}
+.date-page .date-mark .mark-year {
+  position: relative;
+  margin-left: 76px;
+  top: -2px;
+}
+.date-page .date-mark .mark-month {
+  position: relative;
+  margin-left: 40px;
+  top: -2px;
+}
+.date-page .date-mark .mark-day {
+  position: relative;
+  margin-left: 42px;
+  top: -2px;
+}
+.date-page .date-panel {
+  width: 94%;
+  margin: 10px 3%;
+  height: 120px;
+  text-align: center;
+  line-height: 40px;
+  font-size: 20px;
+}
+.date-page .date-panel div {
+  float: left;
+  margin-left: 10%;
+  margin-top: 15px;
+  padding-right: 22px;
+}
+.date-page .date-panel .year-wrapper,
+.date-page .date-panel .month-wrapper,
+.date-page .date-panel .day-wrapper {
+  position: absolute;
+  top: 45px;
+  bottom: 60px;
+  width: 80%;
+}
+.date-page .date-panel .year-wrapper ul,
+.date-page .date-panel .month-wrapper ul,
+.date-page .date-panel .day-wrapper ul {
+  width: 40%;
+}
+.date-page .date-panel .year-wrapper ul li,
+.date-page .date-panel .month-wrapper ul li,
+.date-page .date-panel .day-wrapper ul li {
+  color: #898989;
+  font-size: 20px;
+}
+.date-page .date-panel .year-wrapper {
+  left: 0;
+}
+.date-page .date-panel .month-wrapper {
+  left: 26%;
+}
+.date-page .date-panel .day-wrapper {
+  left: 50%;
+}
+.date-page .date-footer {
+  height: 50px;
+  border-top: 1px solid #a8a8a8;
+}
+.date-page .date-footer .btn {
+  width: 40vw;
+  height: 48px;
+  line-height: 48px;
+  float: left;
+  font-size: 4vh;
+  font-weight: normal;
+  text-align: center;
+}
+.date-page .date-footer .true {
+  box-sizing: border-box;
+  border-right: 1px solid #a8a8a8;
+  color: #0092ff;
+}
+/*遮罩*/
+.mask {
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  position: absolute;
+  top: 0;
+  opacity: 0.5;
+}
+/*显示、隐藏*/
+.hide {
+  display: none;
+}
+.show {
+  display: block;
+}
+.search {
+  height: 9vh;
+  padding: 1.5vh 5vw;
+  box-sizing: border-box;
+}
+.search .input-box {
+  width: 90vw;
+  height: 6vh;
+  line-height: 6vh;
+  border-radius: 5px;
+  color: white;
+  font-size: 3vh;
+  font-weight: normal;
+  text-align: center;
+  background: #03a432 url(../images/search.png) no-repeat 96%;
+  background-size: 3vh;
+}
+.message-panel {
+  height: 91vh;
+}
+.message-panel .content {
+  height: 9vh;
+  border-top: 1px solid #ebebeb;
+  background: url(../images/map.png) no-repeat 5%;
+  background-size: 5vh;
+  padding: 1vh 0 1vh 9vh;
+  box-sizing: border-box;
+}
+.message-panel .content .row {
+  height: 3.5vh;
+  line-height: 3.5vh;
+}
+.message-panel .content .row span {
+  font-size: 3vh;
+  font-weight: normal;
+}
+.message-panel .content .font span {
+  font-size: 2vh;
+  font-weight: normal;
+  color: #6e6e6e;
+}
+.message-panel .content:active {
+  background: #ebebeb url(../images/map.png) no-repeat 5%;
+  background-size: 5vh;
+}
+.message-panel .content:last-child {
+  border-bottom: 1px solid #ebebeb;
+}
+.message-panel .no-message {
+  height: 10vh;
+  line-height: 10vh;
+  font-size: 3vh;
+  font-weight: normal;
+  text-align: center;
+  background: #ebebeb;
+  border-top: 1px solid #ebebeb;
+  border-bottom: 1px solid #ebebeb;
+}

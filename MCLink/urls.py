@@ -29,6 +29,11 @@ urlpatterns = [
 
     url(r'^ceshi/$',wechat.views.ceshi,name='ceshi'),
     url(r'^location/$',wechat.views.location,name='location'),
+    url(r'^running_track/$',wechat.views.running_track,name='running_track'),
+    url(r'^flow_card/$',wechat.views.flow_card,name='flow_card'),
+    url(r'^map/$',wechat.views.map,name='map'),
+    url(r'^bill/$',wechat.views.bill,name='bill'),
+    url(r'^flow/$',wechat.views.flow,name='flow'),
     url(r'^wechat/', include('wechat.urls')),
 
 ]

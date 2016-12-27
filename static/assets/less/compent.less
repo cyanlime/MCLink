@@ -1,0 +1,116 @@
+@import "global";
+
+ /*日期插件样式*/
+ .date-page{
+    width: 80vw;
+    height: 240px;
+    background: @color_smoky_bule;
+    border-radius: 5px;
+    position: absolute;
+    top:21vh;
+    left: 10vw;
+    z-index: 100;
+    .date-title{
+        height: 50px;
+        line-height: 50px;
+        .font_larger_bold;
+        color: @color_deep_bule;
+        text-align: center;
+        border-bottom:1px solid @color_smoky_gray;
+    }
+    .date-mark {
+        font-size: 18px;
+        left: 5%;
+        width: 90%;
+        height: 40px;
+        position: absolute;
+        top: 100px;
+        background: #eee;
+        .mark-year{
+            position:relative; 
+            margin-left: 76px;
+            top:-2px;
+        }
+        .mark-month{
+            position:relative; 
+            margin-left: 40px;
+            top:-2px;
+        }
+        .mark-day{
+            position:relative; 
+            margin-left: 42px;
+            top:-2px;
+        }
+    }
+    .date-panel{
+        width: 94%;
+        margin: 10px 3%;
+        height: 120px;
+        text-align: center;
+        line-height: 40px;
+        font-size: 20px;
+        div{
+            float: left;
+            margin-left: 10%;
+            margin-top: 15px;
+            padding-right: 22px;
+        }
+        .year-wrapper, .month-wrapper, .day-wrapper{
+            position: absolute;
+            top:45px;
+            bottom: 60px;
+            width:80%;
+            ul{
+                width:40%;
+            }
+            ul li{
+                color: #898989;font-size: 20px;
+            }
+        }
+        .year-wrapper{
+            left: 0;
+        }
+        .month-wrapper{
+            left: 26%;
+        }
+        .day-wrapper{
+            left: 50%;
+        }
+
+    }
+    .date-footer{
+         height: 50px;
+         border-top:1px solid @color_smoky_gray;
+        .btn{
+            width: 40vw;
+            height: 48px;
+            line-height: 48px;
+            float: left;
+            .font_larger;
+            text-align: center;
+        }
+        .true{
+            box-sizing: border-box;
+            border-right:1px solid @color_smoky_gray;
+            color: @color_deep_bule;
+        }
+    }
+ }
+
+ /*遮罩*/
+ .mask{
+    width: 100vw;
+    height: 100vh;
+    background: @color_black;
+    position: absolute;
+    top:0;
+    opacity: 0.5;
+}
+
+/*显示、隐藏*/
+.hide{
+    display: none;
+}
+.show{
+    display: block;
+}
