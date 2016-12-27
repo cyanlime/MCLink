@@ -13,6 +13,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 import requests
 import json
+import datetime
 import time
 import uuid
 import logging
@@ -276,3 +277,169 @@ def generate_qrcode(request):
     else:
         qrcode_response = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token is null."}}
         return JsonResponse(qrcode_response)
+
+
+@csrf_exempt
+def upload_position(request):
+
+    request_data = json.loads(request.body)
+    CarMEID = request_data.get('id')
+    Token = request_data.get('token')
+    LineArrs = request_data.get('lineArr')
+
+    if len(CarMEID)!=0 and len(Token)!=0 and len(LineArrs)!=0:
+        try:
+            account = Account.objects.get(id=CarMEID)
+            account_token = account.token
+
+            if Token==account_token:
+                for linearr in LineArrs:
+                    if len(linearr)==5:
+                        position_account = account
+                        position_longitude = linearr[0]
+                        position_latitude = linearr[1]
+                        position_bearing = linearr[2]
+                        position_speed = linearr[3]
+                        timestamp_position_time = linearr[4]
+                        position_time = datetime.datetime.fromtimestamp(timestamp_position_time)
+
+                        position = Position.objects.create(account=position_account, longitude=position_longitude,
+                            latitude=position_latitude, bearing=position_bearing, speed=position_speed, time=position_time)
+
+                        accounts_position = {'code': 0, 'result': {'msg': "Location information upload successfully."}}
+                        return JsonResponse(accounts_position)
+                    else:
+                        accounts_position = {'code': 1, 'result': {'msg': "Incoming parameter lineArr ValueError."}}
+                        return JsonResponse(accounts_position)
+            else:
+                accounts_position = {'code': 1, 'result': {'errmsg': "Expired or Invalid token."}}
+                return JsonResponse(accounts_position)
+
+        except ObjectDoesNotExist:
+            accounts_position = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
+            return JsonResponse(accounts_position)
+    else:
+        accounts_position = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token or lineArr is null."}}
+        return JsonResponse(accounts_position)
+
+
+@csrf_exempt
+def search_position(request):
+
+    request_data = json.loads(request.body)
+    CarMEID = request_data.get('id')
+    OpenID = request_data.get('openid')
+    Token = request_data.get('token')
+
+    if len(CarMEID)!=0 and len(OpenID)!=0 and len(Token)!=0:
+        try:
+            account = Account.objects.get(id=CarMEID)
+            account_token = account.token
+
+            if Token==account_token:
+                wxusers = WXUser.objects.filter(openid=OpenID).filter(bind=True)
+                if wxusers is not None and len(wxusers)==1:
+                    for wxuser in wxusers:
+                        if wxuser.account.id==CarMEID:
+                            position_account_id = account.id
+                            position_account_createtime = account.create_time
+                            timestamp_carmeid_createtime = time.mktime(position_account_createtime.timetuple())
+
+                            position = Position.objects.filter(account=CarMEID).order_by('-time').first()
+                            position_longitude = position.longitude
+                            position_latitude = position.latitude
+                            position_bearing = position.bearing
+                            position_speed = position.speed
+                            position_time = position.time
+                            timestamp_position_time = time.mktime(position_time.timetuple())
+
+                            account_position = {'code': 0, 'result': {
+                                'account': {'carmeid': position_account_id, 'create_time': timestamp_carmeid_createtime},
+                                'longitude': position_longitude, 'latitude': position_latitude, 'bearing': position_bearing,
+                                'speed': position_speed, 'time': timestamp_position_time}}
+                            return JsonResponse(account_position)
+                        else:
+                            account_position = {'code': 1, 'result': {'errmsg': "WXUser doesn't bind to the CarMEID."}}
+                            return JsonResponse(account_position)
+                else:
+                    account_position = {'code': 1, 'result': {'errmsg': "WXUser doesn't exist or bind to one CarMEID."}}
+                    return JsonResponse(account_position)
+            else:
+                account_position = {'code': 1, 'result': {'errmsg': "Expired or Invalid token."}}
+                return JsonResponse(account_position)
+
+        except ObjectDoesNotExist:
+            account_position = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
+            return JsonResponse(account_position)
+    else:
+        account_position = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token or openid is null."}}
+        return JsonResponse(account_position)
+
+
+@csrf_exempt
+def search_trace(request):
+    # import pdb
+    # pdb.set_trace()
+
+    request_data = json.loads(request.body)
+    CarMEID = request_data.get('id')
+    OpenID = request_data.get('openid')
+    Token = request_data.get('token')
+    timestamp_StartTime = request_data.get('start_time')
+    timestamp_EndTime = request_data.get('end_time')
+
+    points = []
+    if len(CarMEID)!=0 and len(OpenID)!=0 and len(Token)!=0 and (timestamp_StartTime and timestamp_EndTime) is not None:
+        try:
+            account = Account.objects.get(id=CarMEID)
+            account_token = account.token
+
+            if Token==account_token:
+                wxusers = WXUser.objects.filter(openid=OpenID).filter(bind=True)
+                if wxusers is not None and len(wxusers)==1:
+                    for wxuser in wxusers:
+                        if wxuser.account.id==CarMEID:
+                            if timestamp_EndTime>timestamp_StartTime:
+                                start_date = datetime.datetime.fromtimestamp(timestamp_StartTime)
+                                end_date = datetime.datetime.fromtimestamp(timestamp_EndTime)
+
+                                position_account_id = account.id
+                                position_account_createtime = account.create_time
+                                timestamp_carmeid_createtime = time.mktime(position_account_createtime.timetuple())
+
+                                positions = Position.objects.filter(account=CarMEID).filter(time__range=(start_date, end_date))
+                                for position in positions:
+                                    position_longitude = position.longitude
+                                    position_latitude = position.latitude
+                                    position_bearing = position.bearing
+                                    position_speed = position.speed
+                                    position_time = position.time
+                                    timestamp_position_time = time.mktime(position_time.timetuple())
+
+                                    point = {'longitude': position_longitude, 'latitude': position_latitude, 'bearing': position_bearing,
+                                        'speed': position_speed, 'time': timestamp_position_time}
+                                    points.append(point)
+
+                                account_traces = {'code': 0, 'result': {'points': points,
+                                    'account': {'carmeid': position_account_id, 'create_time': timestamp_carmeid_createtime}}}
+                                return JsonResponse(account_traces)
+                            else:
+                                account_traces = {'code': 1, 'result': {'errmsg': "Incoming parameter values end_time no more than start_time."}}
+                                return JsonResponse(account_traces)
+
+                        else:
+                            account_traces = {'code': 1, 'result': {'errmsg': "WXUser doesn't bind to the CarMEID."}}
+                            return JsonResponse(account_traces)
+                else:
+                    account_traces = {'code': 1, 'result': {'errmsg': "WXUser doesn't exist or bind to one CarMEID."}}
+                    return JsonResponse(account_traces)
+            else:
+                account_traces = {'code': 1, 'result': {'errmsg': "Expired or Invalid token."}}
+                return JsonResponse(account_traces)
+
+        except ObjectDoesNotExist:
+            account_traces = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
+            return JsonResponse(account_traces)
+    else:
+        account_traces = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token or openid or start_time or end_time is null."}}
+        return JsonResponse(account_traces)

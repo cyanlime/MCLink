@@ -20,3 +20,13 @@ class WXUser(models.Model):
     bind = models.BooleanField()
     def __unicode__(self):
         return self.openid
+
+class Position(models.Model):
+    account = models.ForeignKey('Account')
+    longitude = models.CharField(max_length=200)
+    latitude = models.CharField(max_length=200)
+    bearing = models.CharField(max_length=200)
+    speed = models.CharField(max_length=200)
+    time = models.DateTimeField()
+    def __unicode__(self):
+        return self.account.id
