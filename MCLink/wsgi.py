@@ -40,7 +40,7 @@ data = {
             {
                 "type": "view",
                 "name": "行驶轨迹",
-                "url": "http://car.yijiayinong.com/running_track/"
+                "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf1cad953c13fccfc&redirect_uri=http://car.yijiayinong.com/running_track/&response_type=code&scope=snsapi_base&state=#wechat_redirect"
             },
             {
                 "type": "click",
@@ -51,7 +51,7 @@ data = {
     {
         "type": "view",
         "name": "流量卡",
-        "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf1cad953c13fccfc&redirect_uri=http://car.yijiayinong.com/flow_card/&response_type=code&scope=snsapi_base&state=123#wechat_redirect"
+        "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf1cad953c13fccfc&redirect_uri=http://car.yijiayinong.com/flow_card/&response_type=code&scope=snsapi_userinfo&state=#wechat_redirect"
     },
     {
         "type": "click",

@@ -139,6 +139,8 @@ def parseTxtMsg(request):
 	if msgContent == 'VIEW':
 	    msg = '' 
 
+	if msgContent == 'location_select':
+	    msg = ''
     return sendTxtMsg(FromUserName,ToUserName,msg)
 
 from django.http import HttpResponseRedirect  
