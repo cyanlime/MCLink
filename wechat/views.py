@@ -36,7 +36,7 @@ def location(request):
     return render(request,'location.html')
 
 def flow_card(request):
-
+   
     return render(request,'flow_card.html')
 
 def running_track(request):
@@ -83,19 +83,20 @@ def parseTxtMsg(request):
     MsgType = xml.find('MsgType').text
 
     if MsgType == 'text':
-	msg = ''
+	Content = xml.find('Content').text
+	msg = '感谢您的留言，我们会尽快处理'
     if MsgType == 'image':
-	msg = ''
+	msg = '感谢您的留言，我们会尽快处理'
     if MsgType == 'voice':
-	msg = ''
+	msg = '感谢您的留言，我们会尽快处理'
     if MsgType == 'video':
-	msg = ''
+	msg = '感谢您的留言，我们会尽快处理'
     if MsgType == 'shortvideo':
-	msg = ''
+	msg = '感谢您的留言，我们会尽快处理'
     if MsgType == 'location':
-	msg = ''
+	msg = '感谢您的留言，我们会尽快处理'
     if MsgType == 'link':
-	msg = ''
+	msg = '感谢您的留言，我们会尽快处理'
     
     if MsgType == 'event':
 	msgContent = xml.find('Event').text
@@ -105,7 +106,7 @@ def parseTxtMsg(request):
             if wxusers is not None and len(wxusers)==1:
                 for _ in wxusers:
                     account = _.account
-                msg = '感谢您关注车友同行! 这里可以帮您把手机和车机绑定的一起哦。点击远程控制可查看车机相关信息，查看车的位置、轨迹，发送目的地给车机。流量卡可助您快速充值，实时了解流量使用情况。'
+                msg = "感谢您关注车友同行! \n这里可以帮您把手机和车机绑定的一起哦。\n点击远程控制可查看车机相关信息，查看车的位置、轨迹，发送目的地给车机。\n流量卡可助您快速充值，实时了解流量使用情况。"
             else:
                 msg = '您当前尚未绑定设备哦，如需绑定，点击<a href="http://car.yijiayinong.com/ceshi/">扫一扫</a>，对准设备上的二维码即可！'
 
@@ -153,16 +154,6 @@ def sendTxtMsg(FromUserName,ToUserName,Content):
 
 def jump(FromUserName,ToUserName,url):
 
-#    reply_xml = """<xml>
-#    <ToUserName><![CDATA[%s]]></ToUserName>
-#    <FromUserName><![CDATA[%s]]></FromUserName>
-#    <CreateTime>%s</CreateTime>
-#    <MsgType><![CDATA[%s]]></MsgType>
-#    <Content><![CDATA[%s]]></Content>
-#    </xml>""" %(FromUserName,ToUserName,datetime.datetime.now(),'text','Content')
-#
-#    return HttpResponse(reply_xml)
-	
     reply_xml = """<xml>
         <ToUserName><![CDATA[%s]]></ToUserName>
         <FromUserName><![CDATA[%s]]></FromUserName>
@@ -202,6 +193,7 @@ def weixin(request):
         return checkSignature(request)
     else:
         return parseTxtMsg(request)
+
 
 ##获取access_token
 def get_token():
