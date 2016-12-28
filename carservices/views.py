@@ -30,42 +30,42 @@ from cStringIO import StringIO
 def sign_in(request):
 
     request_data = json.loads(request.body)
-    CarMEID = request_data.get('id')
+    CarMEID = request_data.get('carmeid')
     PassWord = request_data.get('password')
 
     if len(CarMEID)!=0 and len(PassWord)!=0:
-
         try:
-            carmeid = Account.objects.get(id=CarMEID)
-            carmeid_password = carmeid.password
+            account = Account.objects.get(carmeid=CarMEID)
+            account_carmeid = account.carmeid
+            account_password = account.password
 
-            if PassWord!=carmeid_password:
-                carmeids = {'code': 1, 'result': {'errmsg': "Incorrect password."}}
-                return JsonResponse(carmeids)
+            if PassWord!=account_password:
+                signin_status = {'code': 1, 'result': {'errmsg': "Incorrect password."}}
+                return JsonResponse(signin_status)
             else:
-                carmeid_id = carmeid.id
-                carmeid_token = carmeid.token
-                carmeid_create_time = carmeid.create_time
-                timestamp_carmeid_createtime = time.mktime(carmeid_create_time.timetuple())
-                carmeids = {'code': 0, 'result': {'create_time': timestamp_carmeid_createtime, 'id': carmeid_id, 'token': carmeid_token}}
-                return JsonResponse(carmeids)
+                account_id = account.id
+                account_token = account.token
+                account_create_time = account.create_time
+                timestamp_account_createtime = time.mktime(account_create_time.timetuple())
+                signin_status = {'code': 0, 'result': {'create_time': timestamp_account_createtime, 'id': account_id, 'carmeid': account_carmeid, 'token': account_token}}
+                return JsonResponse(signin_status)
 
         except ObjectDoesNotExist:
-            carmeid = Account.objects.create(id=CarMEID, password=PassWord, token=str(uuid.uuid1()))
-            carmeid_id = carmeid.id
-            carmeid_token = carmeid.token
-            carmeid_create_time = carmeid.create_time
-            timestamp_carmeid_createtime = time.mktime(carmeid_create_time.timetuple())
-            carmeids = {'code': 0, 'result': {'create_time': timestamp_carmeid_createtime, 'id': carmeid_id, 'token': carmeid_token}}
-            return JsonResponse(carmeids)
-
+            account = Account.objects.create(carmeid=CarMEID, password=PassWord, token=str(uuid.uuid1()))
+            account_id = account.id
+            account_carmeid = account.carmeid
+            account_token = account.token
+            account_create_time = account.create_time
+            timestamp_account_createtime = time.mktime(account_create_time.timetuple())
+            signin_status = {'code': 0, 'result': {'create_time': timestamp_account_createtime, 'id': account_id, 'carmeid': account_carmeid, 'token': account_token}}
+            return JsonResponse(signin_status)
     else:
-        carmeids = {'code': 1, 'result': {'errmsg': "Incoming parameter id or password is null."}}
-        return JsonResponse(carmeids)
+        signin_status = {'code': 1, 'result': {'errmsg': "Incoming parameter carmeid or password is null."}}
+        return JsonResponse(signin_status)
 
    
 @csrf_exempt
-def binding(request):
+def binding_old(request):
    
     #logger = logging.getLogger('django')
     code = request.GET.get('code')
@@ -79,22 +79,22 @@ def binding(request):
     if appid is None or secret is None:
         public_number_status = {'code': 1, 'result': {'errmsg': "AppID or AppSecret missing."}}
         return JsonResponse(public_number_status)
-    fetch_access_token_url = config.FETCH_ACCESS_TOKEN_URL % (appid, secret, code)
+    fetch_web_access_token_url = config.FETCH_WEB_ACCESS_TOKEN_URL % (appid, secret, code)
     
     try:
-        access_token_response = requests.get(fetch_access_token_url)
-        access_token_content = access_token_response.json()
+        web_access_token_response = requests.get(fetch_web_access_token_url)
+        web_access_token_content = web_access_token_response.json()
     except:
-        access_token_request = {'code': 1, 'result': {'errmsg': "Access token Request Error."}}
-        return JsonResponse(access_token_request)
-    fetch_access_token_errcode = access_token_content.get('errcode')
-    if fetch_access_token_errcode is not None:
-        fetch_access_token_errmsg = access_token_content.get('errmsg')
-        fetch_access_token = {'code': 1, 'result': {'errcode': fetch_access_token_errcode, 'errmsg': fetch_access_token_errmsg}}
-        return JsonResponse(fetch_access_token)
-    openID = access_token_content.get('openid')
-    access_token = access_token_content.get('access_token')
-    fetch_user_info_url = config.FETCH_USER_INFO_URL % (access_token, openID)
+        web_access_token_request = {'code': 1, 'result': {'errmsg': "Access token Request Error."}}
+        return JsonResponse(web_access_token_request)
+    fetch_web_access_token_errcode = web_access_token_content.get('errcode')
+    if fetch_web_access_token_errcode is not None:
+        fetch_web_access_token_errmsg = web_access_token_content.get('errmsg')
+        fetch_web_access_token = {'code': 1, 'result': {'errcode': fetch_web_access_token_errcode, 'errmsg': fetch_web_access_token_errmsg}}
+        return JsonResponse(fetch_web_access_token)
+    openID = web_access_token_content.get('openid')
+    web_access_token = web_access_token_content.get('access_token')
+    fetch_user_info_url = config.FETCH_USER_INFO_URL % (web_access_token, openID)
 
     try:
         userinfo_response = requests.get(fetch_user_info_url)
@@ -162,20 +162,21 @@ def bound_accounts(request):
 
     binding_wxusers = []
     request_data = json.loads(request.body)
-    CarMEID = request_data.get('id')
+    CarMEID = request_data.get('carmeid')
     Token = request_data.get('token')
 
     if len(CarMEID)!=0 and len(Token)!=0:
         try:
-            account = Account.objects.get(id=CarMEID)
+            account = Account.objects.get(carmeid=CarMEID)
             account_token = account.token
 
             if Token==account_token:
                 account_id = account.id
+                account_carmeid = account.carmeid
                 account_create_time = account.create_time
                 timestamp_account_createtime = time.mktime(account_create_time.timetuple())
 
-                wxusers = WXUser.objects.filter(account=CarMEID).filter(bind=True)
+                wxusers = WXUser.objects.filter(account=account_id).filter(bind=True)
                 for wxuser in wxusers:
                     wxuser_id = wxuser.id
                     wxuser_openid = wxuser.openid
@@ -183,7 +184,7 @@ def bound_accounts(request):
                     wxuser_head_portrait = wxuser.head_portrait
                     binding_wxuser = {'id': wxuser_id, 'openid': wxuser_openid, 'name': wxuser_name, 'head_portrait': wxuser_head_portrait}
                     binding_wxusers.append(binding_wxuser)
-                bundled_accounts = {'code': 0, 'result': {'CarMEID': account_id, 'create_time': timestamp_account_createtime, 'WXUsers': binding_wxusers}}
+                bundled_accounts = {'code': 0, 'result': {'id': account_id, 'create_time': timestamp_account_createtime, 'carmeid': account_carmeid, 'WXUsers': binding_wxusers}}
                 return JsonResponse(bundled_accounts)
 
             else:
@@ -202,20 +203,20 @@ def bound_accounts(request):
 def remove_binding(request):
 
     request_data = json.loads(request.body)
-    CarMEID = request_data.get('id')
+    CarMEID = request_data.get('carmeid')
     OpenID = request_data.get('openid')
     Token = request_data.get('token')
 
     if len(CarMEID)!=0 and len(OpenID)!=0 and len(Token)!=0:
         try:
-            account = Account.objects.get(id=CarMEID)
+            account = Account.objects.get(carmeid=CarMEID)
             account_token = account.token
 
             if Token==account_token:
                 wxusers = WXUser.objects.filter(openid=OpenID).filter(bind=True)
                 if wxusers is not None and len(wxusers)==1:
                     for wxuser in wxusers:
-                        if wxuser.account.id==CarMEID:
+                        if wxuser.account.carmeid==CarMEID:
                             wxuser.bind=False
                             wxuser.save()
                             unbinding_accounts = {'code': 0, 'result': {'msg': "Remove binding successfully."}}
@@ -239,7 +240,7 @@ def remove_binding(request):
 
 
 @csrf_exempt
-def generate_qrcode(request):
+def generate_qrcode_old(request):
 
     CarMEID = request.GET.get('id')
     Token = request.GET.get('token')
@@ -283,13 +284,13 @@ def generate_qrcode(request):
 def upload_position(request):
 
     request_data = json.loads(request.body)
-    CarMEID = request_data.get('id')
+    CarMEID = request_data.get('carmeid')
     Token = request_data.get('token')
     LineArrs = request_data.get('lineArr')
 
     if len(CarMEID)!=0 and len(Token)!=0 and len(LineArrs)!=0:
         try:
-            account = Account.objects.get(id=CarMEID)
+            account = Account.objects.get(carmeid=CarMEID)
             account_token = account.token
 
             if Token==account_token:
@@ -305,7 +306,6 @@ def upload_position(request):
 
                         position = Position.objects.create(account=position_account, longitude=position_longitude,
                             latitude=position_latitude, bearing=position_bearing, speed=position_speed, time=position_time)
-
                         accounts_position = {'code': 0, 'result': {'msg': "Location information upload successfully."}}
                         return JsonResponse(accounts_position)
                     else:
@@ -319,7 +319,7 @@ def upload_position(request):
             accounts_position = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
             return JsonResponse(accounts_position)
     else:
-        accounts_position = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token or lineArr is null."}}
+        accounts_position = {'code': 1, 'result': {'errmsg': "Incoming parameter carmeid or token or lineArr is null."}}
         return JsonResponse(accounts_position)
 
 
@@ -327,25 +327,27 @@ def upload_position(request):
 def search_position(request):
 
     request_data = json.loads(request.body)
-    CarMEID = request_data.get('id')
+    CarMEID = request_data.get('carmeid')
     OpenID = request_data.get('openid')
     Token = request_data.get('token')
 
     if len(CarMEID)!=0 and len(OpenID)!=0 and len(Token)!=0:
         try:
-            account = Account.objects.get(id=CarMEID)
+            account = Account.objects.get(carmeid=CarMEID)
             account_token = account.token
 
             if Token==account_token:
                 wxusers = WXUser.objects.filter(openid=OpenID).filter(bind=True)
                 if wxusers is not None and len(wxusers)==1:
                     for wxuser in wxusers:
-                        if wxuser.account.id==CarMEID:
+                        if wxuser.account.carmeid==CarMEID:
                             position_account_id = account.id
+                            position_account_carmeid = account.carmeid
                             position_account_createtime = account.create_time
                             timestamp_carmeid_createtime = time.mktime(position_account_createtime.timetuple())
 
-                            position = Position.objects.filter(account=CarMEID).order_by('-time').first()
+                            position = Position.objects.filter(account=position_account_id).order_by('-time').first()
+                            position_id = position.id
                             position_longitude = position.longitude
                             position_latitude = position.latitude
                             position_bearing = position.bearing
@@ -353,8 +355,8 @@ def search_position(request):
                             position_time = position.time
                             timestamp_position_time = time.mktime(position_time.timetuple())
 
-                            account_position = {'code': 0, 'result': {
-                                'account': {'carmeid': position_account_id, 'create_time': timestamp_carmeid_createtime},
+                            account_position = {'code': 0, 'result': {'id': position_id,
+                                'account': {'id': position_account_id, 'carmeid': position_account_carmeid, 'create_time': timestamp_carmeid_createtime},
                                 'longitude': position_longitude, 'latitude': position_latitude, 'bearing': position_bearing,
                                 'speed': position_speed, 'time': timestamp_position_time}}
                             return JsonResponse(account_position)
@@ -378,11 +380,9 @@ def search_position(request):
 
 @csrf_exempt
 def search_trace(request):
-    # import pdb
-    # pdb.set_trace()
 
     request_data = json.loads(request.body)
-    CarMEID = request_data.get('id')
+    CarMEID = request_data.get('carmeid')
     OpenID = request_data.get('openid')
     Token = request_data.get('token')
     timestamp_StartTime = request_data.get('start_time')
@@ -391,24 +391,26 @@ def search_trace(request):
     points = []
     if len(CarMEID)!=0 and len(OpenID)!=0 and len(Token)!=0 and (timestamp_StartTime and timestamp_EndTime) is not None:
         try:
-            account = Account.objects.get(id=CarMEID)
+            account = Account.objects.get(carmeid=CarMEID)
             account_token = account.token
 
             if Token==account_token:
                 wxusers = WXUser.objects.filter(openid=OpenID).filter(bind=True)
                 if wxusers is not None and len(wxusers)==1:
                     for wxuser in wxusers:
-                        if wxuser.account.id==CarMEID:
+                        if wxuser.account.carmeid==CarMEID:
                             if timestamp_EndTime>timestamp_StartTime:
                                 start_date = datetime.datetime.fromtimestamp(timestamp_StartTime)
                                 end_date = datetime.datetime.fromtimestamp(timestamp_EndTime)
 
                                 position_account_id = account.id
+                                position_account_carmeid = account.carmeid
                                 position_account_createtime = account.create_time
                                 timestamp_carmeid_createtime = time.mktime(position_account_createtime.timetuple())
 
-                                positions = Position.objects.filter(account=CarMEID).filter(time__range=(start_date, end_date))
+                                positions = Position.objects.filter(account=position_account_id).filter(time__range=(start_date, end_date))
                                 for position in positions:
+                                    position_id = position.id
                                     position_longitude = position.longitude
                                     position_latitude = position.latitude
                                     position_bearing = position.bearing
@@ -416,12 +418,12 @@ def search_trace(request):
                                     position_time = position.time
                                     timestamp_position_time = time.mktime(position_time.timetuple())
 
-                                    point = {'longitude': position_longitude, 'latitude': position_latitude, 'bearing': position_bearing,
+                                    point = {'id': position_id , 'longitude': position_longitude, 'latitude': position_latitude, 'bearing': position_bearing,
                                         'speed': position_speed, 'time': timestamp_position_time}
                                     points.append(point)
 
                                 account_traces = {'code': 0, 'result': {'points': points,
-                                    'account': {'carmeid': position_account_id, 'create_time': timestamp_carmeid_createtime}}}
+                                    'account': {'id': position_account_id, 'carmeid': position_account_carmeid, 'create_time': timestamp_carmeid_createtime}}}
                                 return JsonResponse(account_traces)
                             else:
                                 account_traces = {'code': 1, 'result': {'errmsg': "Incoming parameter values end_time no more than start_time."}}
@@ -443,3 +445,95 @@ def search_trace(request):
     else:
         account_traces = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token or openid or start_time or end_time is null."}}
         return JsonResponse(account_traces)
+
+
+
+global_access_token = None
+global_access_token_latest_fetch_time = datetime.datetime.now()
+@csrf_exempt
+def generate_qrcode(request):
+    import pdb
+    pdb.set_trace()
+
+    global global_access_token
+    global global_access_token_latest_fetch_time
+
+    CarMEID = request.GET.get('carmeid')
+    Token = request.GET.get('token')
+    if CarMEID is None or Token is None:
+        sign_in_status = {'code': 1, 'result': {'errmsg': "CarMEID or Token missing."}}
+        return JsonResponse(sign_in_status)
+
+    if len(CarMEID)!=0 and len(Token)!=0:
+        try:
+            account = Account.objects.get(carmeid=CarMEID)
+            account_id = account.id
+            account_token = account.token
+
+            if Token==account_token:
+                if global_access_token is None or global_access_token_latest_fetch_time+datetime.timedelta(minutes=115)<datetime.datetime.now():
+
+                    appid = os.getenv('AppID')
+                    secret = os.getenv('AppSecret')
+                    if appid is None or secret is None:
+                        public_number_status = {'code': 1, 'result': {'errmsg': "AppID or AppSecret missing."}}
+                        return JsonResponse(public_number_status)
+                    fetch_access_token_url = config.FETCH_ACCESS_TOKEN_URL % (appid, secret)
+
+                    try:
+                        access_token_response = requests.get(fetch_access_token_url)
+                        access_token_content = access_token_response.json()
+                    except:
+                        access_token_request = {'code': 1, 'result': {'errmsg': "Access token Request Error."}}
+                        return JsonResponse(access_token_request)
+                    fetch_access_token_errcode = access_token_content.get('errcode')
+                    if fetch_access_token_errcode is not None:
+                        fetch_access_token_errmsg = access_token_content.get('errmsg')
+                        fetch_access_token = {'code': 1, 'result': {'errcode': fetch_access_token_errcode, 'errmsg': fetch_access_token_errmsg}}
+                        return JsonResponse(fetch_access_token)
+                    global_access_token = access_token_content.get('access_token')
+                    global_access_token_latest_fetch_time = datetime.datetime.now()
+
+                create_qrcode_ticket_url = config.CREATE_QRCODE_TICKET_URL % (global_access_token)
+                #payload = {"action_name": "QR_LIMIT_STR_SCENE", "action_info": {"scene": {"scene_str": "Welcome"}}}
+                payload = {"expire_seconds": 2592000, "action_name": "QR_SCENE", "action_info": {"scene": {"scene_id": account_id}}}
+                try:
+                    qrcode_ticket_response = requests.post(create_qrcode_ticket_url, data=payload)
+                    qrcode_ticket_content = qrcode_ticket_response.json()
+                except:
+                    qrcode_ticket_response = {'code': 1, 'result': {'errmsg': "Qrcode ticket Request Error."}}
+                    return JsonResponse(qrcode_ticket_response)
+                create_qrcode_ticket_errcode = qrcode_ticket_content.get('errcode')
+                if create_qrcode_ticket_errcode is not None:
+                    create_qrcode_ticket_errmsg = qrcode_ticket_content.get('errmsg')
+                    create_qrcode_ticket = {'code': 1, 'result': {'errcode': create_qrcode_ticket_errcode, 'errmsg': create_qrcode_ticket_errmsg}}
+                    return JsonResponse(create_qrcode_ticket)
+
+                Ticket = qrcode_ticket_content.get('ticket')
+                expire_seconds = qrcode_ticket_content.get('expire_seconds')
+                url = qrcode_ticket_content.get('url')
+
+
+                pdb.set_trace()
+                ticket = urllib.quote_plus(Ticket)
+
+                fetch_qrcode_url = config.FETCH_QRCODE_URL % (ticket)
+                qrcode_response = requests.get(fetch_qrcode_url)
+                return HttpResponse(qrcode_response)
+
+
+            else:
+                qrcode_response = {'code': 1, 'result': {'errmsg': "Expired or Invalid token."}}
+                return JsonResponse(qrcode_response)
+
+        except ObjectDoesNotExist:
+            qrcode_response = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
+            return JsonResponse(qrcode_response)
+    else:
+        qrcode_response = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token is null."}}
+        return JsonResponse(qrcode_response)
+
+
+@csrf_exempt
+def binding(request):
+    pass

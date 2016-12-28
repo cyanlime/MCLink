@@ -6,8 +6,8 @@ from .models import *
 
 class AccountAdmin(admin.ModelAdmin):
     #list_display = ('id', 'create_time')
-    list_display = ('id', 'create_time', 'password', 'token')
-    search_fields = ['id']
+    list_display = ('id', 'create_time', 'carmeid', 'password', 'token')
+    search_fields = ['carmeid']
 
 class WXUserAdmin(admin.ModelAdmin):
     list_display = ('id', 'openid', 'name', 'head_portrait', 'account', 'bind')

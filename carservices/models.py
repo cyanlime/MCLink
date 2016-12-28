@@ -5,12 +5,12 @@ from django.db import models
 # Create your models here.
 
 class Account(models.Model):
-    id = models.CharField(max_length=200, primary_key=True)
     create_time = models.DateTimeField(auto_now_add=True)
+    carmeid = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     token = models.CharField(max_length=200)
     def __unicode__(self):
-        return self.id
+        return self.carmeid
 
 class WXUser(models.Model):
     openid = models.CharField(max_length=200)
@@ -29,4 +29,4 @@ class Position(models.Model):
     speed = models.CharField(max_length=200)
     time = models.DateTimeField()
     def __unicode__(self):
-        return self.account.id
+        return self.account.carmeid
