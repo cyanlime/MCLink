@@ -36,7 +36,7 @@ def location(request):
     return render(request,'location.html')
 
 def flow_card(request):
-   
+     
     return render(request,'flow_card.html')
 
 def running_track(request):
@@ -122,6 +122,8 @@ def parseTxtMsg(request):
 		if wxusers is not None and len(wxusers)==1:
 		    for _ in wxusers:
 		   	account = _.account
+		#	openid = _.openid
+		 #   return oppenid(openid)
 		    msg = '您的车机ID是:'+str(account)
 		else:  
 		    msg = '您当前尚未绑定设备哦，如需绑定，点击<a href="http://car.yijiayinong.com/ceshi/">扫一扫</a>，对准设备上的二维码即可！'
@@ -135,11 +137,14 @@ def parseTxtMsg(request):
 		return getResponseImageTextXml(FromUserName,ToUserName,title,description,picurl,url)
 
 	if msgContent == 'VIEW':
-		msg = '' 
+	    msg = '' 
 
     return sendTxtMsg(FromUserName,ToUserName,msg)
 
-
+from django.http import HttpResponseRedirect  
+def oppenid(openid):
+     
+     return HttpResponseRedirect('/flow_card/')
 def sendTxtMsg(FromUserName,ToUserName,Content):
     reply_xml = """<xml>
         <ToUserName><![CDATA[%s]]></ToUserName>
@@ -277,54 +282,54 @@ def weixin1Jsapi(request):
     return Response(data)
 
 
-##创建自定义菜单	
-@csrf_exempt
-def createMenu(request):
-    url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s" % get_token()
-    data = {
-        "button": [
-        {
-            "name": "远程控制",
-            "sub_button": [
-                {
-                    "type": "view",
-                    "name": "查询位置",
-                    "url": "http://car.yijiayinong.com/location/"
-                },
-                {
-                    "name": "快速导航",
-                    "type": "location_select",
-                    "key": "rselfmenu_2_0"
-                },
-                {
-                    "type": "view",
-                    "name": "行驶轨迹",
-                    "url": "http://car.yijiayinong.com/running_track/"
-                },
-                {
-                    "type": "click",
-                    "name": "我的设备",
-                    "key": "ceshi"
-                }]
-        },
-        {
-            "type": "view",
-            "name": "流量卡",
-            "url": "http://car.yijiayinong.com/flow_card/"
-        },
-        {
-           "type": "click",
-           "name": "更多服务",
-           "key": "news"
-        }]
-    }
-
-    req = urllib2.Request(url)
-    req.add_header('Content-Type', 'application/json')
-    req.add_header('encoding', 'utf-8')
-    response = urllib2.urlopen(req, json.dumps(data,ensure_ascii=False).encode('utf8'))
-    result = response.read()
-    return HttpResponse(result)
+###创建自定义菜单	
+#@csrf_exempt
+#def createMenu(request):
+#    url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s" % get_token()
+#    data = {
+#        "button": [
+#        {
+#            "name": "远程控制",
+#            "sub_button": [
+#                {
+#                    "type": "view",
+#                    "name": "查询位置",
+#                    "url": "http://car.yijiayinong.com/location/"
+#                },
+#                {
+#                    "name": "快速导航",
+#                    "type": "location_select",
+#                    "key": "rselfmenu_2_0"
+#                },
+#                {
+#                    "type": "view",
+#                    "name": "行驶轨迹",
+#                    "url": "http://car.yijiayinong.com/running_track/"
+#                },
+#                {
+#                    "type": "click",
+#                    "name": "我的设备",
+#                    "key": "ceshi"
+#                }]
+#        },
+#        {
+#            "type": "view",
+#            "name": "流量卡",
+#            "url": "http://car.yijiayinong.com/flow_card/"
+#        },
+#        {
+#           "type": "click",
+#           "name": "更多服务",
+#           "key": "news"
+#        }]
+#    }
+#
+#    req = urllib2.Request(url)
+#    req.add_header('Content-Type', 'application/json')
+#    req.add_header('encoding', 'utf-8')
+#    response = urllib2.urlopen(req, json.dumps(data,ensure_ascii=False).encode('utf8'))
+#    result = response.read()
+#    return HttpResponse(result)
 
 
 #获取图文列表
