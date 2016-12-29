@@ -1,0 +1,120 @@
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+  color: #000;
+  font-family: "苹方, Microsoft YaHei, sans-serif";
+}
+.font_normal {
+  font-size: 3vh;
+  font-weight: normal;
+}
+.font_x_small {
+  font-size: 1.5vh;
+  font-weight: normal;
+}
+.font_small {
+  font-size: 2vh;
+  font-weight: normal;
+}
+.font_larger {
+  font-size: 4vh;
+  font-weight: normal;
+}
+.font_larger_bold {
+  font-size: 4vh;
+  font-weight: bold;
+}
+.font_x_larger_bold {
+  font-size: 6vh;
+  font-weight: bold;
+}
+.box {
+  margin: 3vh 3vw;
+}
+.box .massage-panel {
+  height: 8vh;
+  margin-bottom: 3vh;
+}
+.box .massage-panel .tel {
+  height: 5vh;
+  line-height: 5vh;
+  font-size: 3vh;
+  font-weight: normal;
+}
+.box .massage-panel .info {
+  float: left;
+  color: #6e6e6e;
+  padding: 0 3vw;
+  border-right: 1px solid #6e6e6e;
+  font-size: 1.5vh;
+  font-weight: normal;
+}
+.box .massage-panel .info span {
+  color: red;
+}
+.box .massage-panel .info:last-child {
+  border: none;
+}
+.box .massage-panel .info:first-child {
+  padding-left: 0;
+}
+.box .recharge-panel {
+  height: 20vh;
+  margin-bottom: 2vh;
+}
+.box .recharge-panel .cash {
+  float: left;
+  height: 7.5vh;
+  line-height: 7.5vh;
+  width: 30vw;
+  font-size: 3vh;
+  font-weight: normal;
+  color: #676767;
+  text-align: center;
+  border: 1px solid #9da1a0;
+  box-sizing: border-box;
+  margin-right: 2vw;
+  margin-bottom: 3vw;
+  border-radius: 3px;
+}
+.box .recharge-panel .cash:hover {
+  border: 1px solid #0092ff;
+  background: url(../images/check.png) no-repeat 100% bottom;
+  background-size: 5vh;
+}
+.box .recharge-panel .cash:last-child {
+  margin-right: 0;
+}
+.box .recharge-panel .cash:nth-last-child(4) {
+  margin-right: 0;
+}
+.box .des {
+  height: 30vh;
+  margin: 0 auto;
+}
+.box .des div {
+  height: 5vh;
+  line-height: 5vh;
+  font-size: 2vh;
+  font-weight: normal;
+}
+.box .des p {
+  height: 3vh;
+  line-height: 3vh;
+  color: #6e6e6e;
+  font-size: 1.5vh;
+  font-weight: normal;
+}
+.box .btn {
+  height: 6vh;
+  line-height: 6vh;
+  text-align: center;
+  font-size: 3vh;
+  font-weight: normal;
+  color: white;
+  background: #0092ff;
+  margin: 0 auto;
+  border-radius: 5px;
+}

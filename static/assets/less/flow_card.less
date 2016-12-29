@@ -1,0 +1,82 @@
+@import "global";
+
+.panel{
+    height: 60vh;
+    box-sizing: border-box;
+    margin:0 3vw;
+    .title{
+        height: 10vh;
+        line-height: 10vh;
+        text-align: center;
+        .font_normal;
+    }
+    .pie-chart{
+        height: 45vh;
+        background:url(../images/flow_card.png) no-repeat center;
+        background-size: 35vh;
+        padding: 5vh 18vw;
+        box-sizing: border-box;
+        div{
+            text-align: center;
+        }
+        .top{
+            margin-top:10vh;
+            .font_normal;
+        }
+        .center{
+            span{
+                .font_normal;
+            }
+            .num{
+                .font_x_larger_bold;
+            }
+        }
+        .bottom{
+            .font_small
+        }
+    }
+    
+    .date{
+        float: right;
+        line-height: 5vh;
+        .font_x_small;
+    }
+
+}
+.other{
+    height: 40vh;
+    .box{
+        height: 10vh;
+        line-height: 10vh;
+        border-top: 1px solid @color_smoky_gray;
+        border-bottom: 1px solid @color_smoky_gray;
+        padding:2.5vh 3vw;
+        box-sizing: border-box;
+        .content{
+            float: left;
+            height: 5vh;
+            line-height: 5vh;
+            .font_normal;
+        }
+        .btn{
+            float: right;
+            height: 5vh;
+            width: 25vw;
+            line-height: 5vh;
+            margin-right: 3vw;
+            border: 1px solid @color_smoky_gray;
+            border-radius: 3px;
+            box-sizing: border-box;
+            text-align: center;
+            .font_normal;
+            background: @color_white_1;
+        }
+        .btn:hover{
+            background: @color_deep_bule;
+            color: @color_white;
+        }
+    }
+    .box:first-child{
+        border-bottom: none;
+    }
+}

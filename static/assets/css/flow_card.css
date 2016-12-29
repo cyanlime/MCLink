@@ -1,0 +1,116 @@
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+  color: #000;
+  font-family: "苹方, Microsoft YaHei, sans-serif";
+}
+.font_normal {
+  font-size: 3vh;
+  font-weight: normal;
+}
+.font_x_small {
+  font-size: 1.5vh;
+  font-weight: normal;
+}
+.font_small {
+  font-size: 2vh;
+  font-weight: normal;
+}
+.font_larger {
+  font-size: 4vh;
+  font-weight: normal;
+}
+.font_larger_bold {
+  font-size: 4vh;
+  font-weight: bold;
+}
+.font_x_larger_bold {
+  font-size: 6vh;
+  font-weight: bold;
+}
+.panel {
+  height: 60vh;
+  box-sizing: border-box;
+  margin: 0 3vw;
+}
+.panel .title {
+  height: 10vh;
+  line-height: 10vh;
+  text-align: center;
+  font-size: 3vh;
+  font-weight: normal;
+}
+.panel .pie-chart {
+  height: 45vh;
+  background: url(../images/flow_card.png) no-repeat center;
+  background-size: 35vh;
+  padding: 5vh 18vw;
+  box-sizing: border-box;
+}
+.panel .pie-chart div {
+  text-align: center;
+}
+.panel .pie-chart .top {
+  margin-top: 10vh;
+  font-size: 3vh;
+  font-weight: normal;
+}
+.panel .pie-chart .center span {
+  font-size: 3vh;
+  font-weight: normal;
+}
+.panel .pie-chart .center .num {
+  font-size: 6vh;
+  font-weight: bold;
+}
+.panel .pie-chart .bottom {
+  font-size: 2vh;
+  font-weight: normal;
+}
+.panel .date {
+  float: right;
+  line-height: 5vh;
+  font-size: 1.5vh;
+  font-weight: normal;
+}
+.other {
+  height: 40vh;
+}
+.other .box {
+  height: 10vh;
+  line-height: 10vh;
+  border-top: 1px solid #a8a8a8;
+  border-bottom: 1px solid #a8a8a8;
+  padding: 2.5vh 3vw;
+  box-sizing: border-box;
+}
+.other .box .content {
+  float: left;
+  height: 5vh;
+  line-height: 5vh;
+  font-size: 3vh;
+  font-weight: normal;
+}
+.other .box .btn {
+  float: right;
+  height: 5vh;
+  width: 25vw;
+  line-height: 5vh;
+  margin-right: 3vw;
+  border: 1px solid #a8a8a8;
+  border-radius: 3px;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 3vh;
+  font-weight: normal;
+  background: #eeeeee;
+}
+.other .box .btn:hover {
+  background: #0092ff;
+  color: white;
+}
+.other .box:first-child {
+  border-bottom: none;
+}

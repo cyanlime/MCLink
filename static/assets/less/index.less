@@ -1,0 +1,59 @@
+@import "global";
+@import "compent";
+
+.search{
+    height: 9vh;
+    padding:1.5vh 5vw;
+    box-sizing: border-box;
+    .input-box{
+        width: 90vw;
+        height: 6vh;
+        line-height: 6vh;
+        border-radius: 5px;
+        color: @color_white;
+        .font_normal;
+        text-align: center;
+        background:@color_green url(../images/search.png) no-repeat 96%;
+        background-size: 3vh;
+    }
+}
+.message-panel{
+    height: 91vh;
+   .content{
+       height: 9vh;
+       border-top: 1px solid @color_smoky_white;
+       background: url(../images/map.png) no-repeat 5%;
+       background-size: 5vh;
+       padding: 1vh 0 1vh 9vh;
+       box-sizing: border-box;
+       .row{
+           height: 3.5vh;
+           line-height: 3.5vh;
+           span{
+               .font_normal;
+           }
+       } 
+       .font{
+           span{
+               .font_small;
+               color: @color_gray;
+           }
+       }
+   }
+   .content:active{
+       background: @color_smoky_white url(../images/map.png) no-repeat 5%;
+       background-size: 5vh;
+   }
+   .content:last-child{
+       border-bottom: 1px solid @color_smoky_white;
+   }
+   .no-message{
+        height: 10vh;
+        line-height: 10vh;
+        .font_normal;
+        text-align: center;
+        background: @color_smoky_white;
+        border-top: 1px solid @color_smoky_white;
+        border-bottom: 1px solid @color_smoky_white;
+    }
+}

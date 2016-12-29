@@ -25,15 +25,36 @@ from rest_framework.decorators import(
 from . import utils
 from django.shortcuts import render
 
-from carservices import views
+from carservices.models import *
+from django.shortcuts import render_to_response
 
 def ceshi(request):
 
-   return render(request,'ceshi.html')
+    return render(request,'ceshi.html')
 
 def location(request):
+    return render(request,'location.html')
 
-   return render(request,'location.html')
+def flow_card(request):
+    code = request.GET.get('code',None)
+    
+    return render(request,'flow_card.html')
+
+def running_track(request):
+
+    return render(request,'index.html')
+
+def map(request):
+
+    return render(request,'map_track.html')
+
+def bill(request):
+   
+    return render(request,'bill.html')
+
+def flow(request):
+    
+    return render(request,'flow.html')
 
 
 def checkSignature(request):
@@ -64,45 +85,50 @@ def parseTxtMsg(request):
 
     if MsgType == 'text':
 	Content = xml.find('Content').text
-		
- 	if Content == '1':
-       	    msg = '悬崖边上放了一个 WARNING 的牌子，结果只有程序猿掉了下去...'
-        elif Content == '2':
-            msg = datetime.datetime.now()
-        else:
-            msg = '欢迎访问车友同行微信公众号，本公众号正在建设中，目前提供的服务有限，输入1听一个笑话，输入2查看当前时间,任意输入将重新收到本消息。'
-
+	msg = '感谢您的留言，我们会尽快处理'
     if MsgType == 'image':
-	msg = '您发的图片我们已经收到。'
+	msg = '感谢您的留言，我们会尽快处理'
     if MsgType == 'voice':
-	msg = '感谢您的留言，我们会尽快处理。'
+	msg = '感谢您的留言，我们会尽快处理'
     if MsgType == 'video':
-	msg = '感谢您的留言，我们会尽快处理。'
+	msg = '感谢您的留言，我们会尽快处理'
     if MsgType == 'shortvideo':
-	msg = '感谢您的留言，我们会尽快处理。'
+	msg = '感谢您的留言，我们会尽快处理'
     if MsgType == 'location':
-	msg = msg = '您当前尚未绑定设备哦，如需绑定，点击<a href="http://car.yijiayinong.com/ceshi/">扫一扫</a>，对准设备上的二维码即可！'
+	msg = '感谢您的留言，我们会尽快处理'
     if MsgType == 'link':
-	msg = '感谢您的留言，我们会尽快处理。'
+	msg = '感谢您的留言，我们会尽快处理'
     
     if MsgType == 'event':
 	msgContent = xml.find('Event').text
 	if msgContent == 'subscribe':
-	    msg = '感谢您的关注！'
+	    OppenId = FromUserName
+            wxusers = WXUser.objects.filter(openid = OppenId).filter(bind=True)
+            if wxusers is not None and len(wxusers)==1:
+                for _ in wxusers:
+                    account = _.account
+                msg = "感谢您关注车友同行! \n这里可以帮您把手机和车机绑定的一起哦。\n点击远程控制可查看车机相关信息，查看车的位置、轨迹，发送目的地给车机。\n流量卡可助您快速充值，实时了解流量使用情况。"
+            else:
+                msg = '您当前尚未绑定设备哦，如需绑定，点击<a href="http://car.yijiayinong.com/ceshi/">扫一扫</a>，对准设备上的二维码即可！'
 
 	if msgContent == 'unsubscribe':
-	    msg = '取消关注？'
+	    msg = ''
 	    
         if msgContent == 'CLICK':
 	    key = xml.find('EventKey').text
 	    if key == 'ceshi':
-		binding = views.binding(request)
-		import pdb 
-		pdb.set_trace()
-		if binding(request).code is None:
-		    msg = '1'
-		else:
+		OppenId = FromUserName
+		 
+		wxusers = WXUser.objects.filter(openid = OppenId).filter(bind=True)
+		if wxusers is not None and len(wxusers)==1:
+		    for _ in wxusers:
+		   	account = _.account
+		#	openid = _.openid
+		 #   return oppenid(openid)
+		    msg = '您的车机ID是:'+str(account)
+		else:  
 		    msg = '您当前尚未绑定设备哦，如需绑定，点击<a href="http://car.yijiayinong.com/ceshi/">扫一扫</a>，对准设备上的二维码即可！'
+
 	    if key == 'news':
 		title = '查看违章'
                 description = '查看违章'
@@ -112,20 +138,40 @@ def parseTxtMsg(request):
 		return getResponseImageTextXml(FromUserName,ToUserName,title,description,picurl,url)
 
 	if msgContent == 'VIEW':
-		msg = '' 
+	    msg = '' 
 
+	if msgContent == 'location_select':
+	    msg = ''
     return sendTxtMsg(FromUserName,ToUserName,msg)
 
-
+from django.http import HttpResponseRedirect  
+def oppenid(openid):
+     
+     return HttpResponseRedirect('/flow_card/')
 def sendTxtMsg(FromUserName,ToUserName,Content):
     reply_xml = """<xml>
-    <ToUserName><![CDATA[%s]]></ToUserName>
-    <FromUserName><![CDATA[%s]]></FromUserName>
-    <CreateTime>%s</CreateTime>
-    <MsgType><![CDATA[text]]></MsgType>
-    <Content><![CDATA[%s]]></Content>
-    </xml>""" %(FromUserName,ToUserName,datetime.datetime.now(),Content)
+        <ToUserName><![CDATA[%s]]></ToUserName>
+        <FromUserName><![CDATA[%s]]></FromUserName>
+        <CreateTime>%s</CreateTime>
+        <MsgType><![CDATA[text]]></MsgType>
+        <Content><![CDATA[%s]]></Content>
+        </xml>""" %(FromUserName,ToUserName,datetime.datetime.now(),Content)
     
+    return HttpResponse(reply_xml)
+
+
+def jump(FromUserName,ToUserName,url):
+
+    reply_xml = """<xml>
+        <ToUserName><![CDATA[%s]]></ToUserName>
+        <FromUserName><![CDATA[%s]]></FromUserName>
+        <CreateTime>%s</CreateTime>
+        <MsgType><![CDATA[%s]]></MsgType>
+        <Event><![CDATA[%s]]></Event>
+        <EventKey><![CDATA[%s]]></EventKey>
+    
+        </xml>""" %(FromUserName,ToUserName,datetime.datetime.now(),'event','VIEW',url)
+    print reply_xml
     return HttpResponse(reply_xml)
 
 
@@ -155,6 +201,7 @@ def weixin(request):
         return checkSignature(request)
     else:
         return parseTxtMsg(request)
+
 
 ##获取access_token
 def get_token():
@@ -238,54 +285,54 @@ def weixin1Jsapi(request):
     return Response(data)
 
 
-##创建自定义菜单	
-@csrf_exempt
-def createMenu(request):
-    url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s" % get_token()
-    data = {
-        "button": [
-        {
-            "name": "远程控制",
-            "sub_button": [
-                {
-                    "type": "view",
-                    "name": "查询位置",
-                    "url": "http://car.yijiayinong.com/location/"
-                },
-                {
-                    "name": "快速导航",
-                    "type": "location_select",
-                    "key": "rselfmenu_2_0"
-                },
-                {
-                    "type": "view",
-                    "name": "行驶轨迹",
-                    "url": "http://www.baidu.com"
-                },
-                {
-                    "type": "click",
-                    "name": "我的设备",
-                    "key": "ceshi"
-                }]
-        },
-        {
-            "type": "view",
-            "name": "流量卡",
-            "url": "http://www.baidu.com"
-        },
-        {
-           "type": "click",
-           "name": "更多服务",
-           "key": "news"
-        }]
-    }
-
-    req = urllib2.Request(url)
-    req.add_header('Content-Type', 'application/json')
-    req.add_header('encoding', 'utf-8')
-    response = urllib2.urlopen(req, json.dumps(data,ensure_ascii=False).encode('utf8'))
-    result = response.read()
-    return HttpResponse(result)
+###创建自定义菜单	
+#@csrf_exempt
+#def createMenu(request):
+#    url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s" % get_token()
+#    data = {
+#        "button": [
+#        {
+#            "name": "远程控制",
+#            "sub_button": [
+#                {
+#                    "type": "view",
+#                    "name": "查询位置",
+#                    "url": "http://car.yijiayinong.com/location/"
+#                },
+#                {
+#                    "name": "快速导航",
+#                    "type": "location_select",
+#                    "key": "rselfmenu_2_0"
+#                },
+#                {
+#                    "type": "view",
+#                    "name": "行驶轨迹",
+#                    "url": "http://car.yijiayinong.com/running_track/"
+#                },
+#                {
+#                    "type": "click",
+#                    "name": "我的设备",
+#                    "key": "ceshi"
+#                }]
+#        },
+#        {
+#            "type": "view",
+#            "name": "流量卡",
+#            "url": "http://car.yijiayinong.com/flow_card/"
+#        },
+#        {
+#           "type": "click",
+#           "name": "更多服务",
+#           "key": "news"
+#        }]
+#    }
+#
+#    req = urllib2.Request(url)
+#    req.add_header('Content-Type', 'application/json')
+#    req.add_header('encoding', 'utf-8')
+#    response = urllib2.urlopen(req, json.dumps(data,ensure_ascii=False).encode('utf8'))
+#    result = response.read()
+#    return HttpResponse(result)
 
 
 #获取图文列表

@@ -1,0 +1,32 @@
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+  color: #000;
+  font-family: "苹方, Microsoft YaHei, sans-serif";
+}
+.font_normal {
+  font-size: 3vh;
+  font-weight: normal;
+}
+.font_x_small {
+  font-size: 1.5vh;
+  font-weight: normal;
+}
+.font_small {
+  font-size: 2vh;
+  font-weight: normal;
+}
+.font_larger {
+  font-size: 4vh;
+  font-weight: normal;
+}
+.font_larger_bold {
+  font-size: 4vh;
+  font-weight: bold;
+}
+.font_x_larger_bold {
+  font-size: 6vh;
+  font-weight: bold;
+}
