@@ -36,7 +36,8 @@ def location(request):
     return render(request,'location.html')
 
 def flow_card(request):
-     
+    code = request.GET.get('code',None)
+    
     return render(request,'flow_card.html')
 
 def running_track(request):
