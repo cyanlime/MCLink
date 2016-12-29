@@ -195,7 +195,7 @@ def bound_accounts(request):
             bundled_accounts = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
             return JsonResponse(bundled_accounts)
     else:
-        bundled_accounts = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token is null."}}
+        bundled_accounts = {'code': 1, 'result': {'errmsg': "Incoming parameter carmeid or token is null."}}
         return JsonResponse(bundled_accounts)
 
 
@@ -235,7 +235,7 @@ def remove_binding(request):
             unbinding_accounts = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
             return JsonResponse(unbinding_accounts)
     else:
-        unbinding_accounts = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token or openid is null."}}
+        unbinding_accounts = {'code': 1, 'result': {'errmsg': "Incoming parameter carmeid or token or openid is null."}}
         return JsonResponse(unbinding_accounts)
 
 
@@ -276,7 +276,7 @@ def generate_qrcode_old(request):
             qrcode_response = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
             return JsonResponse(qrcode_response)
     else:
-        qrcode_response = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token is null."}}
+        qrcode_response = {'code': 1, 'result': {'errmsg': "Incoming parameter carmeid or token is null."}}
         return JsonResponse(qrcode_response)
 
 
@@ -374,7 +374,7 @@ def search_position(request):
             account_position = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
             return JsonResponse(account_position)
     else:
-        account_position = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token or openid is null."}}
+        account_position = {'code': 1, 'result': {'errmsg': "Incoming parameter carmeid or token or openid is null."}}
         return JsonResponse(account_position)
 
 
@@ -443,7 +443,7 @@ def search_trace(request):
             account_traces = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
             return JsonResponse(account_traces)
     else:
-        account_traces = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token or openid or start_time or end_time is null."}}
+        account_traces = {'code': 1, 'result': {'errmsg': "Incoming parameter carmeid or token or openid or start_time or end_time is null."}}
         return JsonResponse(account_traces)
 
 
@@ -530,7 +530,7 @@ def generate_qrcode(request):
             qrcode_response = {'code': 1, 'result': {'errmsg': "Invalid CarMEID."}}
             return JsonResponse(qrcode_response)
     else:
-        qrcode_response = {'code': 1, 'result': {'errmsg': "Incoming parameter id or token is null."}}
+        qrcode_response = {'code': 1, 'result': {'errmsg': "Incoming parameter carmeid or token is null."}}
         return JsonResponse(qrcode_response)
 
 
