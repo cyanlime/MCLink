@@ -13,7 +13,7 @@ FETCH_USER_INFO_URL = \
 
 FETCH_ACCESS_TOKEN_URL = \
     ('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential'
-    '?appid=%s&secret=%s')
+    '&appid=%s&secret=%s')
 CREATE_QRCODE_TICKET_URL = \
     ('https://api.weixin.qq.com/cgi-bin/qrcode/create'
     '?access_token=%s')
